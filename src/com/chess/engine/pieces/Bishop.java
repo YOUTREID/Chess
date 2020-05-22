@@ -18,21 +18,21 @@ public class Bishop extends Piece {
 
     private final static  int[] POSSIBLE_OFFSETS = {-9, -7, 7, 9};
 
-    Bishop(int piecePosition, Alliance pieceAlliance) {
+    public Bishop(final Alliance pieceAlliance, final int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        for (final int candidateOffset : POSSIBLE_OFFSETS) {
+        for (final int current : POSSIBLE_OFFSETS) {
             int destination = this.piecePosition;
             while (BoardUtils.isValid(destination)) {
-                if (isFirstColumnExclusion(destination, candidateOffset) ||
-                isEigthColumnExclusion(destination, candidateOffset)) {
+                if (isFirstColumnExclusion(destination, current) ||
+                isEigthColumnExclusion(destination, current)) {
                     break;
                 }
-                destination += candidateOffset;
+                destination += current;
                 if (BoardUtils.isValid((destination))) {
                     final Tile candidateDestinationTile = board.getTile(destination);
                     if (!candidateDestinationTile.occupied()) {

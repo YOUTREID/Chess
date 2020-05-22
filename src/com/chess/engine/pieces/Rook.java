@@ -15,30 +15,30 @@ public class Rook extends Piece {
 
     private final static  int[] POSSIBLE_OFFSETS = {-8, -1, 1, 8};
 
-    Rook(int piecePosition, Alliance pieceAlliance) {
+    public Rook(final Alliance pieceAlliance, final int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        for (final int candidateOffset : POSSIBLE_OFFSETS) {
-            int destination = this.piecePosition;
-            while (BoardUtils.isValid(destination)) {
-                if (isFirstColumnExclusion(destination, candidateOffset) ||
-                        isEigthColumnExclusion(destination, candidateOffset)) {
+        for (final int current : POSSIBLE_OFFSETS) {
+            int destinationCoordinate = this.piecePosition;
+            while (BoardUtils.isValid(destinationCoordinate)) {
+                if (isFirstColumnExclusion(destinationCoordinate, current) ||
+                        isEigthColumnExclusion(destinationCoordinate, current)) {
                     break;
                 }
-                destination += candidateOffset;
-                if (BoardUtils.isValid((destination))) {
-                    final Tile candidateDestinationTile = board.getTile(destination);
+                destinationCoordinate += current;
+                if (BoardUtils.isValid((destinationCoordinate))) {
+                    final Tile candidateDestinationTile = board.getTile(destinationCoordinate);
                     if (!candidateDestinationTile.occupied()) {
-                        legalMoves.add(new Move.MajorMove(board, this, destination));
+                        legalMoves.add(new Move.MajorMove(board, this, destinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new Move.AttackMove(board, this, destination, pieceAtDestination));
+                            legalMoves.add(new Move.AttackMove(board, this, destinationCoordinate, pieceAtDestination));
                         }
                     }
                     break;
