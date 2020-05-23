@@ -48,6 +48,11 @@ public class Queen extends Piece{
         return ImmutableList.copyOf(legalMoves);
     }
 
+    @Override
+    public String toString() {
+        return Type.QUEEN.toString();
+    }
+
     private static boolean isFirstColumnExclusion(final int current, final int candidateOffset) {
         return BoardUtils.FIRST_COLUMN[current] && (candidateOffset == -9 || candidateOffset == 7 || candidateOffset == -1);
     }
