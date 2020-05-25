@@ -2,6 +2,9 @@ package com.chess.engine.board;
 
 import com.chess.engine.Alliance;
 import com.chess.engine.pieces.*;
+import com.chess.engine.player.BlackPlayer;
+import com.chess.engine.player.Player;
+import com.chess.engine.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
 
 import java.util.*;
@@ -12,6 +15,9 @@ public class Board {
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
 
+    private final WhitePlayer whitePlayer;
+    private final BlackPlayer blackPlayer;
+
     public Board(Builder builder) {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
@@ -19,6 +25,9 @@ public class Board {
 
         final Collection<Move> whiteLegalMoves = calculateLegalMoves(this.whitePieces);
         final Collection<Move> blackLegalMoves = calculateLegalMoves(this.blackPieces);
+
+        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
+        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
     }
 
     @Override
@@ -32,6 +41,22 @@ public class Board {
             }
         }
         return builder.toString();
+    }
+
+    public Player whitePlayer() {
+        return this.whitePlayer;
+    }
+
+    public Player blackPlayer() {
+        return this.blackPlayer;
+    }
+
+    public Collection<Piece> getBlackPieces() {
+        return this.blackPieces;
+    }
+
+    public Collection<Piece> getWhitePieces() {
+        return this.whitePieces;
     }
 
     private String formatPrint(Tile tile) {

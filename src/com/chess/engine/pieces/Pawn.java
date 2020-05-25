@@ -17,7 +17,7 @@ public class Pawn extends Piece {
     private static final int[] POSSIBLE_OFFSET = {8, 16, 7, 9};
 
     public Pawn(final Alliance pieceAlliance, final int piecePosition) {
-        super(piecePosition, pieceAlliance);
+        super(Type.PAWN, piecePosition, pieceAlliance);
     }
 
     @Override
