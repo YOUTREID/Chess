@@ -35,6 +35,14 @@ public abstract class Player {
         return ImmutableList.copyOf(attackMoves);
     }
 
+    public King getPlayerKing() {
+        return this.playerKing;
+    }
+
+    public Collection<Move> getLegalMoves() {
+        return this.legalMoves;
+    }
+
     protected King establishKing() {
         for (final Piece piece : getActivePieces()) {
             if (piece.getPieceType().isKing()) {
@@ -52,7 +60,6 @@ public abstract class Player {
         return this.isInCheck;
     }
 
-    //TODO
     public boolean isInCheckMate() {
         return this.isInCheck && !hasEscapeMoves();
     }
@@ -67,7 +74,7 @@ public abstract class Player {
     }
 
     public boolean isInStaleMate() {
-        return false;
+        return !this.isInCheck && !hasEscapeMoves();
     }
 
     public boolean isCastled() {
@@ -75,7 +82,20 @@ public abstract class Player {
     }
 
     public MoveTransition makeMove(final Move move) {
-        return null;
+        if (!isMoveLegal(move)) {
+            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
+        }
+
+        final Board transitionBoard = move.execute();
+
+        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
+                transitionBoard.currentPlayer().getLegalMoves());
+
+        if (!kingAttacks.isEmpty()) {
+            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+        }
+
+        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();
