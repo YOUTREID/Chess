@@ -43,8 +43,8 @@ public class Bishop extends Piece {
                         if (this.pieceAlliance != pieceAlliance) {
                             legalMoves.add(new AttackMove(board, this, destination, pieceAtDestination));
                         }
+                        break;
                     }
-                    break;
                 }
             }
         }

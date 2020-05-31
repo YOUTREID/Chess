@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.MajorMove;
-
 public class Pawn extends Piece {
 
     private static final int[] POSSIBLE_OFFSET = {8, 16, 7, 9};
@@ -21,47 +19,47 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Collection<Move> calculateLegalMoves(Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int current : POSSIBLE_OFFSET) {
-            int destinationCoordinate = this.piecePosition + current;
-            if (!BoardUtils.isValid((destinationCoordinate))) {
+            final int destination = this.piecePosition + (this.getPieceAlliance().getDirection() * current);
+
+            if (!BoardUtils.isValid(destination)) {
                 continue;
             }
-            if (current == 8 && board.getTile(destinationCoordinate).occupied()) {
-                // promotions
-                legalMoves.add(new MajorMove(board, this, destinationCoordinate));
+
+            if (current == 8 && !board.getTile(destination).occupied()) {
+                legalMoves.add(new Move.MajorMove(board, this, destination));
             } else if (current == 16 && this.isFirstMove() &&
                     (BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
                     (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite())) {
-                final int behindCandidateDestination = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
-                if (!board.getTile(behindCandidateDestination).occupied() && !board.getTile(destinationCoordinate).occupied()) {
-                    legalMoves.add(new MajorMove(board, this, destinationCoordinate));
-                } else if (current == 7 &&
-                        !((BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
-                                (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
-                    if (board.getTile(destinationCoordinate).occupied()) {
-                        final Piece pieceOnCandidate = board.getTile(destinationCoordinate).getPiece();
-                        if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                            // attacking into a promotion
-                            legalMoves.add(new MajorMove(board, this, destinationCoordinate));
-                        }
+                final int behindDestination = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
+                if (!board.getTile(behindDestination).occupied() &&
+                    !board.getTile(destination).occupied()) {
+                    legalMoves.add(new Move.MajorMove(board, this, destination));
+                }
+            } else if (current == 7 &&
+                     !((BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
+                     (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
+                if (board.getTile(destination).occupied()) {
+                    final Piece piece  = board.getTile(destination).getPiece();
+                    if (this.pieceAlliance != piece.getPieceAlliance()) {
+                        legalMoves.add(new Move.MajorMove(board, this, destination));
                     }
-                } else if (current == 9 &&
-                        !((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
-                                (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
-                    if (board.getTile(destinationCoordinate).occupied()) {
-                        final Piece pieceOnCandidate = board.getTile(destinationCoordinate).getPiece();
-                        if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                            // attacking into a promotion
-                            legalMoves.add(new MajorMove(board, this, destinationCoordinate));
-                        }
+                }
+            } else if (current == 9 &&
+                    !((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
+                    (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
+                if (board.getTile(destination).occupied()) {
+                    final Piece piece = board.getTile(destination).getPiece();
+                    if (this.pieceAlliance != piece.getPieceAlliance()) {
+                        legalMoves.add(new Move.MajorMove(board, this, destination));
                     }
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves);
+        return ImmutableList.copyOf((legalMoves));
     }
 
     @Override

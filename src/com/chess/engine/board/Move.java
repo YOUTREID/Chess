@@ -11,12 +11,19 @@ public abstract class Move {
     final Piece movedPiece;
     final int destination;
 
+    public static final Move NULL_MOVE = new NullMove();
+
     private Move(final Board board,
                  final Piece movedPiece,
                  final int destination) {
         this.board = board;
         this.movedPiece = movedPiece;
         this.destination = destination;
+    }
+
+    @Override
+    public String toString() {
+        return movedPiece + String.format(" from %d to %d", getCurrent(), destination);
     }
 
     @Override
@@ -276,11 +283,8 @@ public abstract class Move {
     }
 
     public static class MoveFactory {
-        private static final Move NULL_MOVE = new NullMove();
 
-        private MoveFactory() {
-            throw new RuntimeException("MoveFactory cannot be instantiated.");
-        }
+        private MoveFactory(){}
 
         public static Move createMove(final Board board,
                                       final int current,

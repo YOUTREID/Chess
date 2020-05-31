@@ -17,5 +17,4 @@ public class JChess {
         Table table = new Table();
 
     }
-
 }

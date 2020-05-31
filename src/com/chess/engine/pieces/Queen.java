@@ -21,27 +21,29 @@ public class Queen extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
+
         final List<Move> legalMoves = new ArrayList<>();
+
         for (final int current : POSSIBLE_OFFSETS) {
-            int destinationCoordinate = this.piecePosition;
-            while (BoardUtils.isValid(destinationCoordinate)) {
-                if (isFirstColumnExclusion(destinationCoordinate, current) ||
-                        isEigthColumnExclusion(destinationCoordinate, current)) {
+            int destination = this.piecePosition;
+            while (BoardUtils.isValid(destination)) {
+                if (isFirstColumnExclusion(destination, current) ||
+                        isEigthColumnExclusion(destination, current)) {
                     break;
                 }
-                destinationCoordinate += current;
-                if (BoardUtils.isValid((destinationCoordinate))) {
-                    final Tile candidateDestinationTile = board.getTile(destinationCoordinate);
+                destination += current;
+                if (BoardUtils.isValid((destination))) {
+                    final Tile candidateDestinationTile = board.getTile(destination);
                     if (!candidateDestinationTile.occupied()) {
-                        legalMoves.add(new Move.MajorMove(board, this, destinationCoordinate));
+                        legalMoves.add(new Move.MajorMove(board, this, destination));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new Move.AttackMove(board, this, destinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new Move.AttackMove(board, this, destination, pieceAtDestination));
                         }
+                        break;
                     }
-                    break;
                 }
             }
         }

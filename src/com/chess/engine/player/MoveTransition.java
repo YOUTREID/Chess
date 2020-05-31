@@ -12,9 +12,14 @@ public class MoveTransition {
         this.transitionBoard = transitionBoard;
         this.move = move;
         this.moveStatus = moveStatus;
+        // System.out.println(transitionBoard);
     }
 
     public MoveStatus getMoveStatus() {
         return this.moveStatus;
+    }
+
+    public Board getTransitionBoard() {
+        return this.transitionBoard;
     }
 }
