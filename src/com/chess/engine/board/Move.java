@@ -1,9 +1,8 @@
 package com.chess.engine.board;
 
+import com.chess.engine.board.Board.Builder;
 import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
-
-import com.chess.engine.board.Board.Builder;
 import com.chess.engine.pieces.Rook;
 
 public abstract class Move {
@@ -39,7 +38,7 @@ public abstract class Move {
         }
         final Move otherMove = (Move) other;
         return getDestination() == otherMove.getDestination() &&
-               getMovedPiece().equals(otherMove.getMovedPiece());
+                getMovedPiece().equals(otherMove.getMovedPiece());
     }
 
     public int getCurrent() {
@@ -86,18 +85,19 @@ public abstract class Move {
 
     public static final class MajorMove extends Move {
         public MajorMove(final Board board,
-                  final Piece movedPiece,
-                  final int destination) {
+                         final Piece movedPiece,
+                         final int destination) {
             super(board, movedPiece, destination);
         }
     }
 
     public static class AttackMove extends Move {
         final Piece attackedPiece;
+
         public AttackMove(final Board board,
-                   final Piece movedPiece,
-                   final int destinationCoordinate,
-                   final Piece attackedPiece) {
+                          final Piece movedPiece,
+                          final int destinationCoordinate,
+                          final Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate);
             this.attackedPiece = attackedPiece;
         }
@@ -178,7 +178,7 @@ public abstract class Move {
             for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
                 builder.setPiece(piece);
             }
-            final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this);
+            final Pawn movedPawn = (Pawn) this.movedPiece.movePiece(this);
             builder.setPiece(movedPawn);
             builder.setEnPassantPawn(movedPawn);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
@@ -198,7 +198,7 @@ public abstract class Move {
                           final Rook castleRook,
                           final int castleRookStart,
                           final int castleRookDestination
-                          ) {
+        ) {
             super(board, movedPiece, destination);
             this.castleRook = castleRook;
             this.castleRookStart = castleRookStart;
@@ -287,9 +287,9 @@ public abstract class Move {
                                       final int destination) {
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getCurrent() == current &&
-                    move.getDestination() == destination) {
-                        return move;
-                    }
+                        move.getDestination() == destination) {
+                    return move;
+                }
             }
             return NULL_MOVE;
         }

@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.*;
+import static com.chess.engine.board.Move.AttackMove;
 
 public class Bishop extends Piece {
 
-    private final static  int[] POSSIBLE_OFFSETS = {-9, -7, 7, 9};
+    private final static int[] POSSIBLE_OFFSETS = {-9, -7, 7, 9};
 
     public Bishop(final Alliance pieceAlliance, final int piecePosition) {
         super(Type.BISHOP, piecePosition, pieceAlliance);
@@ -29,7 +29,7 @@ public class Bishop extends Piece {
             int destination = this.piecePosition;
             while (BoardUtils.isValid(destination)) {
                 if (isFirstColumnExclusion(destination, current) ||
-                isEigthColumnExclusion(destination, current)) {
+                        isEigthColumnExclusion(destination, current)) {
                     break;
                 }
                 destination += current;

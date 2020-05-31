@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.*;
+import static com.chess.engine.board.Move.MajorMove;
 
 public class Pawn extends Piece {
 
@@ -33,14 +33,14 @@ public class Pawn extends Piece {
                 // promotions
                 legalMoves.add(new MajorMove(board, this, destinationCoordinate));
             } else if (current == 16 && this.isFirstMove() &&
-                    (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
-                    (BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isWhite())) {
+                    (BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
+                    (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite())) {
                 final int behindCandidateDestination = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
                 if (!board.getTile(behindCandidateDestination).occupied() && !board.getTile(destinationCoordinate).occupied()) {
                     legalMoves.add(new MajorMove(board, this, destinationCoordinate));
-                } else if(current == 7 &&
+                } else if (current == 7 &&
                         !((BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
-                        (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
+                                (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
                     if (board.getTile(destinationCoordinate).occupied()) {
                         final Piece pieceOnCandidate = board.getTile(destinationCoordinate).getPiece();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
@@ -50,7 +50,7 @@ public class Pawn extends Piece {
                     }
                 } else if (current == 9 &&
                         !((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
-                         (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
+                                (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
                     if (board.getTile(destinationCoordinate).occupied()) {
                         final Piece pieceOnCandidate = board.getTile(destinationCoordinate).getPiece();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {

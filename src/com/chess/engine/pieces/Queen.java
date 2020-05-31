@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Queen extends Piece{
+public class Queen extends Piece {
 
-    private final static  int[] POSSIBLE_OFFSETS = {-9, -8, -7, -1, 1, 7, 8, 9};
+    private final static int[] POSSIBLE_OFFSETS = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     public Queen(final Alliance pieceAlliance, final int piecePosition) {
         super(Type.QUEEN, piecePosition, pieceAlliance);

@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.*;
+import static com.chess.engine.board.Move.AttackMove;
+import static com.chess.engine.board.Move.MajorMove;
 
 public class King extends Piece {
 

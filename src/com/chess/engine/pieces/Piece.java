@@ -14,16 +14,15 @@ public abstract class Piece {
     protected final boolean isFirstMove;
     private final int cachedHashCode;
 
-    Piece (final Type pieceType, final int piecePosition, final Alliance pieceAlliance) {
+    Piece(final Type pieceType, final int piecePosition, final Alliance pieceAlliance) {
         this.pieceType = pieceType;
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
-        //TODO more work
         this.isFirstMove = false;
         this.cachedHashCode = computeHashCode();
     }
 
-    protected  int computeHashCode() {
+    protected int computeHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
@@ -72,7 +71,7 @@ public abstract class Piece {
 
     public enum Type {
 
-        PAWN("P"){
+        PAWN("P") {
             @Override
             public boolean isKing() {
                 return false;
@@ -139,7 +138,7 @@ public abstract class Piece {
             }
         };
 
-        private String name;
+        private final String name;
 
         Type(final String name) {
             this.name = name;

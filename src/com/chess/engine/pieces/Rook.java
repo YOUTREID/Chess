@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Rook extends Piece {
 
-    private final static  int[] POSSIBLE_OFFSETS = {-8, -1, 1, 8};
+    private final static int[] POSSIBLE_OFFSETS = {-8, -1, 1, 8};
 
     public Rook(final Alliance pieceAlliance, final int piecePosition) {
         super(Type.ROOK, piecePosition, pieceAlliance);
