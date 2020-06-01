@@ -4,18 +4,25 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MajorMove;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.chess.engine.board.Move.*;
+
 public class Pawn extends Piece {
 
     private static final int[] POSSIBLE_OFFSET = {8, 16, 7, 9};
 
     public Pawn(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.PAWN, piecePosition, pieceAlliance);
+        super(Type.PAWN, piecePosition, pieceAlliance, true);
+    }
+
+    public Pawn(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+        super(Type.PAWN, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -30,14 +37,14 @@ public class Pawn extends Piece {
             }
 
             if (current == 8 && !board.getTile(destination).occupied()) {
-                legalMoves.add(new Move.MajorMove(board, this, destination));
+                legalMoves.add(new MajorMove(board, this, destination));
             } else if (current == 16 && this.isFirstMove() &&
-                    (BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
-                    (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite())) {
+                    ((BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
+                    (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite()))) {
                 final int behindDestination = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
                 if (!board.getTile(behindDestination).occupied() &&
                     !board.getTile(destination).occupied()) {
-                    legalMoves.add(new Move.MajorMove(board, this, destination));
+                    legalMoves.add(new PawnJump(board, this, destination));
                 }
             } else if (current == 7 &&
                      !((BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
@@ -45,7 +52,7 @@ public class Pawn extends Piece {
                 if (board.getTile(destination).occupied()) {
                     final Piece piece  = board.getTile(destination).getPiece();
                     if (this.pieceAlliance != piece.getPieceAlliance()) {
-                        legalMoves.add(new Move.MajorMove(board, this, destination));
+                        legalMoves.add(new PawnAttackMove(board, this, destination, piece));
                     }
                 }
             } else if (current == 9 &&
@@ -54,7 +61,7 @@ public class Pawn extends Piece {
                 if (board.getTile(destination).occupied()) {
                     final Piece piece = board.getTile(destination).getPiece();
                     if (this.pieceAlliance != piece.getPieceAlliance()) {
-                        legalMoves.add(new Move.MajorMove(board, this, destination));
+                        legalMoves.add(new PawnAttackMove(board, this, destination, piece));
                     }
                 }
             }

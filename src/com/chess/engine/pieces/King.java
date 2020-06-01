@@ -19,7 +19,11 @@ public class King extends Piece {
     private static final int[] POSSIBLE_OFFSET = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     public King(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.KING, piecePosition, pieceAlliance);
+        super(Type.KING, piecePosition, pieceAlliance, true);
+    }
+
+    public King(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+        super(Type.KING, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override

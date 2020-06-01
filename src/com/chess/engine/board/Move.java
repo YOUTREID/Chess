@@ -7,9 +7,10 @@ import com.chess.engine.pieces.Rook;
 
 public abstract class Move {
 
-    final Board board;
-    final Piece movedPiece;
-    final int destination;
+    protected final Board board;
+    protected final Piece movedPiece;
+    protected final int destination;
+    protected final boolean isFirstMove;
 
     public static final Move NULL_MOVE = new NullMove();
 
@@ -19,6 +20,14 @@ public abstract class Move {
         this.board = board;
         this.movedPiece = movedPiece;
         this.destination = destination;
+        this.isFirstMove = movedPiece.isFirstMove();
+    }
+
+    private Move(final Board board, final int destination) {
+        this.board = board;
+        this.destination = destination;
+        this.movedPiece = null;
+        this.isFirstMove = false;
     }
 
     @Override
@@ -32,6 +41,7 @@ public abstract class Move {
         int result = 1;
         result = prime * result + this.destination;
         result = prime * result + this.movedPiece.hashCode();
+        result = prime * result + this.movedPiece.getPiecePosition();
         return result;
     }
 
@@ -44,7 +54,8 @@ public abstract class Move {
             return false;
         }
         final Move otherMove = (Move) other;
-        return getDestination() == otherMove.getDestination() &&
+        return getCurrent() == otherMove.getCurrent() &&
+                getDestination() == otherMove.getDestination() &&
                 getMovedPiece().equals(otherMove.getMovedPiece());
     }
 
@@ -95,6 +106,16 @@ public abstract class Move {
                          final Piece movedPiece,
                          final int destination) {
             super(board, movedPiece, destination);
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            return this == other || other instanceof MajorMove && super.equals(other);
+        }
+
+        @Override
+        public String toString() {
+            return movedPiece.getPieceType().toString() + BoardUtils.getPositionAtCoordinate(this.destination);
         }
     }
 
@@ -191,6 +212,11 @@ public abstract class Move {
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
         }
+
+        @Override
+        public String toString() {
+            return BoardUtils.getPositionAtCoordinate(this.destination);
+        }
     }
 
     static abstract class CastleMove extends Move {
@@ -273,12 +299,18 @@ public abstract class Move {
 
     public static final class NullMove extends Move {
         public NullMove() {
-            super(null, null, -1);
+            super(null, 65);
         }
 
         @Override
         public Board execute() {
             throw new RuntimeException("NullMove cannot be executed.");
+        }
+
+        // prevents null pointers when left clicking same tile twice
+        @Override
+        public int getCurrent() {
+            return -1;
         }
     }
 

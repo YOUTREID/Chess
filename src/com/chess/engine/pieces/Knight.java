@@ -19,7 +19,11 @@ public class Knight extends Piece {
     private final static int[] POSSIBLE_OFFSETS = {-17, -15, -10, 6, 6, 10, 15, 17};
 
     public Knight(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.KNIGHT, piecePosition, pieceAlliance);
+        super(Type.KNIGHT, piecePosition, pieceAlliance, true);
+    }
+
+    public Knight(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+        super(Type.KNIGHT, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
