@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.chess.engine.board.Move.*;
 import static com.chess.engine.board.Move.AttackMove;
 import static com.chess.engine.board.Move.MajorMove;
 
@@ -47,7 +48,7 @@ public class King extends Piece {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                     if (this.pieceAlliance != pieceAlliance) {
-                        legalMoves.add(new AttackMove(board, this, destinationCoordinate, pieceAtDestination));
+                        legalMoves.add(new MajorAttackMove(board, this, destinationCoordinate, pieceAtDestination));
                     }
                 }
             }

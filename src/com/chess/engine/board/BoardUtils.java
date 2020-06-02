@@ -40,9 +40,6 @@ public class BoardUtils {
 
     private static boolean[] initRow(int rowNumber) {
         final boolean[] row = new boolean[NUM_TILES];
-        for(int i = 0; i < row.length; i++) {
-            row[i] = false;
-        }
         do {
             row[rowNumber] = true;
             rowNumber++;

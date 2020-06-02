@@ -37,7 +37,8 @@ public class Pawn extends Piece {
             }
 
             if (current == 8 && !board.getTile(destination).occupied()) {
-                legalMoves.add(new MajorMove(board, this, destination));
+                //TODO pawn promotions
+                legalMoves.add(new PawnMove(board, this, destination));
             } else if (current == 16 && this.isFirstMove() &&
                     ((BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
                     (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite()))) {

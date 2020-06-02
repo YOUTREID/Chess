@@ -37,7 +37,7 @@ public class Table {
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
 
-    private static String defaultPieceImagePath = "art/fancy/";
+    private final String defaultPieceImagePath = "art/fancy/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
 

@@ -5,14 +5,13 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MajorMove;
+import com.chess.engine.board.Move.MajorAttackMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static com.chess.engine.board.Move.AttackMove;
 
 public class Bishop extends Piece {
 
@@ -33,7 +32,7 @@ public class Bishop extends Piece {
             int destination = this.piecePosition;
             while (BoardUtils.isValid(destination)) {
                 if (isFirstColumnExclusion(destination, current) ||
-                        isEigthColumnExclusion(destination, current)) {
+                        isEighthColumnExclusion(destination, current)) {
                     break;
                 }
                 destination += current;
@@ -45,7 +44,7 @@ public class Bishop extends Piece {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new AttackMove(board, this, destination, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, destination, pieceAtDestination));
                         }
                         break;
                     }
@@ -69,7 +68,7 @@ public class Bishop extends Piece {
         return BoardUtils.FIRST_COLUMN[current] && (candidateOffset == -9 || candidateOffset == 7);
     }
 
-    private static boolean isEigthColumnExclusion(final int current, final int candidateOffset) {
+    private static boolean isEighthColumnExclusion(final int current, final int candidateOffset) {
         return BoardUtils.EIGHTH_COLUMN[current] && (candidateOffset == -7 || candidateOffset == 9);
     }
 }

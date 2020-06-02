@@ -143,7 +143,7 @@ public abstract class Piece {
         };
 
         private final String name;
-        private int pieceValue;
+        private final int pieceValue;
 
         Type(final String name, final int pieceValue) {
             this.name = name;

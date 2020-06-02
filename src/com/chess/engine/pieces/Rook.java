@@ -4,6 +4,8 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MajorAttackMove;
+import com.chess.engine.board.Move.MajorMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -30,19 +32,19 @@ public class Rook extends Piece {
             int destinationCoordinate = this.piecePosition;
             while (BoardUtils.isValid(destinationCoordinate)) {
                 if (isFirstColumnExclusion(destinationCoordinate, current) ||
-                        isEigthColumnExclusion(destinationCoordinate, current)) {
+                        isEighthColumnExclusion(destinationCoordinate, current)) {
                     break;
                 }
                 destinationCoordinate += current;
                 if (BoardUtils.isValid((destinationCoordinate))) {
                     final Tile candidateDestinationTile = board.getTile(destinationCoordinate);
                     if (!candidateDestinationTile.occupied()) {
-                        legalMoves.add(new Move.MajorMove(board, this, destinationCoordinate));
+                        legalMoves.add(new MajorMove(board, this, destinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new Move.AttackMove(board, this, destinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, destinationCoordinate, pieceAtDestination));
                         }
                     }
                     break;
@@ -66,7 +68,7 @@ public class Rook extends Piece {
         return BoardUtils.FIRST_COLUMN[current] && (candidateOffset == -1);
     }
 
-    private static boolean isEigthColumnExclusion(final int current, final int candidateOffset) {
+    private static boolean isEighthColumnExclusion(final int current, final int candidateOffset) {
         return BoardUtils.EIGHTH_COLUMN[current] && (candidateOffset == 1);
     }
 }
