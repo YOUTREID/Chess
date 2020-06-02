@@ -22,8 +22,9 @@ public class TakenPiecesPanel extends JPanel {
     private final JPanel southPanel;
 
     private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(40, 80);
-    private static final Color PANEL_COLOR = Color.decode("0xFDFE6");
+    private static final Color PANEL_COLOR = Color.decode("0xFDF5E6");
     private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
+    private static final long serialVersionUID = 1L;
 
     public TakenPiecesPanel() {
         super (new BorderLayout());
@@ -76,9 +77,10 @@ public class TakenPiecesPanel extends JPanel {
             try {
                 final BufferedImage image = ImageIO.read(new File("art/fancy/" +
                         takenPiece.getPieceAlliance().toString().substring(0, 1) + "" +
-                        takenPiece.toString()));
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
+                        takenPiece.toString() + ".gif"));
+                final ImageIcon ic = new ImageIcon(image);
+                final JLabel imageLabel = new JLabel(new ImageIcon(ic.getImage().getScaledInstance(
+                        ic.getIconWidth() - 15, ic.getIconWidth() - 15, Image.SCALE_SMOOTH)));
                 this.southPanel.add(imageLabel);
             } catch (final IOException e) {
                 e.printStackTrace();
@@ -89,10 +91,11 @@ public class TakenPiecesPanel extends JPanel {
             try {
                 final BufferedImage image = ImageIO.read(new File("art/fancy/" +
                         takenPiece.getPieceAlliance().toString().substring(0, 1) + "" +
-                        takenPiece.toString()));
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
-                this.southPanel.add(imageLabel);
+                        takenPiece.toString() + ".gif"));
+                final ImageIcon ic = new ImageIcon(image);
+                final JLabel imageLabel = new JLabel(new ImageIcon(ic.getImage().getScaledInstance(
+                        ic.getIconWidth() - 15, ic.getIconWidth() - 15, Image.SCALE_SMOOTH)));
+                this.northPanel.add(imageLabel);
             } catch (final IOException e) {
                 e.printStackTrace();
             }
