@@ -29,26 +29,24 @@ public class King extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-
         final List<Move> legalMoves = new ArrayList<>();
 
         for (int current : POSSIBLE_OFFSET) {
-            final int destinationCoordinate = this.piecePosition + current;
-
+            final int destination = this.piecePosition + current;
             if (isFirstColumnExclusion(this.piecePosition, current) ||
-                    isEighthColumnExclusion(this.piecePosition, current)) {
+                isEighthColumnExclusion(this.piecePosition, current)) {
                 continue;
             }
 
-            if (BoardUtils.isValid(destinationCoordinate)) {
-                final Tile candidateDestinationTile = board.getTile(destinationCoordinate);
+            if (BoardUtils.isValid(destination)) {
+                final Tile candidateDestinationTile = board.getTile(destination);
                 if (!candidateDestinationTile.occupied()) {
-                    legalMoves.add(new MajorMove(board, this, destinationCoordinate));
+                    legalMoves.add(new MajorMove(board, this, destination));
                 } else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                     if (this.pieceAlliance != pieceAlliance) {
-                        legalMoves.add(new MajorAttackMove(board, this, destinationCoordinate, pieceAtDestination));
+                        legalMoves.add(new MajorAttackMove(board, this, destination, pieceAtDestination));
                     }
                 }
             }

@@ -19,14 +19,13 @@ public class BoardUtils {
     public static final boolean[] FIRST_RANK = initRow(56);
 
     public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
-    public final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
+    public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
     public static final int NUM_TILES = 64;
     public static final int NUM_TILES_PER_ROW = 8;
     public static final int START_TILE_INDEX = 0;
 
-    private BoardUtils() {
-        throw new RuntimeException("BoardUtils cannot be instantiated.");
+    public BoardUtils() {
     }
 
     private static boolean[] initColumn(int columnNumber) {
@@ -47,7 +46,7 @@ public class BoardUtils {
         return row;
     }
 
-    private Map<String, Integer> initializePositionToCoordinateMap() {
+    private static Map<String, Integer> initializePositionToCoordinateMap() {
         final Map<String, Integer> positionToCoordinate = new HashMap<>();
         for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
             positionToCoordinate.put(ALGEBRAIC_NOTATION.get(i), i);
@@ -71,7 +70,7 @@ public class BoardUtils {
         return coordinate >= 0 && coordinate < NUM_TILES;
     }
 
-    public int getCoordinateAtPosition(final String position) {
+    public static int getCoordinateAtPosition(final String position) {
         return POSITION_TO_COORDINATE.get(position);
     }
 

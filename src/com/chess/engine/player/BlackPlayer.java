@@ -67,4 +67,8 @@ public class BlackPlayer extends Player {
         return ImmutableList.copyOf(kingCastles);
     }
 
+    @Override
+    public String toString() {
+        return "Black";
+    }
 }
