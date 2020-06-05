@@ -9,6 +9,7 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 import com.google.common.collect.ImmutableList;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,16 +36,19 @@ public class WhitePlayer extends Player {
     }
 
     @Override
-    protected Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals) {
+    public Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals) {
         final List<Move> kingCastles = new ArrayList<>();
         if (this.playerKing.isFirstMove() && !this.isInCheck()) {
             //whites king side castle
             if (!this.board.getTile(61).occupied() && !this.board.getTile(62).occupied()) {
+                System.out.println(1);
                 final Tile rookTile = this.board.getTile(63);
                 if (rookTile.occupied() && rookTile.getPiece().isFirstMove()) {
+                    System.out.println(2);
                     if (Player.calculateAttacksOnTile(61, opponentLegals).isEmpty() &&
                             Player.calculateAttacksOnTile(62, opponentLegals).isEmpty() &&
                             rookTile.getPiece().getPieceType().isRook()) {
+                        System.out.println(3);
                         kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 62,
                                 (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 61));
                     }

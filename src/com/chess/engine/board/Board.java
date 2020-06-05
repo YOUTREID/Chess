@@ -148,13 +148,19 @@ public class Board {
         return builder.build();
     }
 
-    public Iterable<Move> getAllLegalMoves() {
-        return Iterables.unmodifiableIterable(Iterables.concat(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())),
+    public Collection<Move> getAllLegalMoves() {
+        Collection<Move> moves = ImmutableList.copyOf(Iterables.concat(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())),
                 calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance()))));
+        moves = ImmutableList.copyOf(Iterables.concat(moves, this.currentPlayer.calculateKingCastles(getLegalMoves(), getOpponentMoves())));
+        return moves;
     }
 
-    public Iterable<Move> getLegalMoves() {
-        return Iterables.unmodifiableIterable(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance())));
+    public Collection<Move> getLegalMoves() {
+        return ImmutableList.copyOf(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance())));
+    }
+
+    public Collection<Move> getOpponentMoves() {
+        return ImmutableList.copyOf(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())));
     }
 
     public Player currentPlayer() {

@@ -54,7 +54,7 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
-        return ((Collection<Move>)board.getLegalMoves()).contains(move);
+        return ((Collection<Move>)board.getAllLegalMoves()).contains(move);
     }
 
     public boolean isInCheck() {
