@@ -41,7 +41,7 @@ public abstract class Player {
     }
 
     public Collection<Move> getLegalMoves() {
-        return this.legalMoves;
+        return (Collection<Move>) board.getLegalMoves();
     }
 
     protected King establishKing() {
@@ -54,7 +54,7 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
-        return this.legalMoves.contains(move);
+        return ((Collection<Move>)board.getLegalMoves()).contains(move);
     }
 
     public boolean isInCheck() {
@@ -79,14 +79,13 @@ public abstract class Player {
     }
 
     public boolean isCastled() {
-        return false;
+        return this.playerKing.isCastled();
     }
 
     public MoveTransition makeMove(final Move move) {
         if (!isMoveLegal(move)) {
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
-
         final Board transitionBoard = move.execute();
 
         final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
@@ -105,6 +104,6 @@ public abstract class Player {
 
     public abstract Player getOpponent();
 
-    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);
+    public abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);
 
 }

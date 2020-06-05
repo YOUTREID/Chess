@@ -35,7 +35,6 @@ public class Pawn extends Piece {
             if (!BoardUtils.isValid(destination)) {
                 continue;
             }
-
             if (current == 8 && !board.getTile(destination).occupied()) {
                 if (this.pieceAlliance.isPawnPromotionSquare(destination)) {
                     legalMoves.add(new PawnPromotion(new PawnMove(board, this, destination)));

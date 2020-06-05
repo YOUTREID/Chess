@@ -37,7 +37,8 @@ public class Table {
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
 
-    private final String defaultPieceImagePath = "art/fancy/";
+    private final String imageFormat = ".png";
+    private final String defaultPieceImagePath = "art/simple/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
 
@@ -299,7 +300,7 @@ public class Table {
                     final BufferedImage image =
                             ImageIO.read(new File(defaultPieceImagePath +
                                     board.getTile(this.tileID).getPiece().getPieceAlliance().toString().substring(0, 1) +
-                                    board.getTile(this.tileID).getPiece().toString() + ".gif"));
+                                    board.getTile(this.tileID).getPiece().toString() + imageFormat));
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {
                     e.printStackTrace();

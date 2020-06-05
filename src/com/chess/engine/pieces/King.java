@@ -74,4 +74,8 @@ public class King extends Piece {
         return BoardUtils.SECOND_COLUMN[currentPosition] && (candidateOffset == -7 || candidateOffset == 1 ||
                 candidateOffset == 9);
     }
+
+    public boolean isCastled() {
+        return false;
+    }
 }

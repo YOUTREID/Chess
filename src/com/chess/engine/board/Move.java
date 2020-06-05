@@ -5,6 +5,9 @@ import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Move {
 
     protected final Board board;
@@ -171,7 +174,6 @@ public abstract class Move {
             return super.equals(otherAttackMove) && getAttackedPiece().equals(otherAttackMove.getAttackedPiece());
         }
 
-
     }
 
     public static final class PawnMove extends Move {
@@ -192,7 +194,7 @@ public abstract class Move {
         }
     }
 
-    public static final class PawnAttackMove extends AttackMove {
+    public static class PawnAttackMove extends AttackMove {
         public PawnAttackMove(final Board board,
                               final Piece movedPiece,
                               final int destination,
@@ -212,7 +214,7 @@ public abstract class Move {
         }
     }
 
-    public static final class PawnEnPassantAttackMove extends AttackMove {
+    public static final class PawnEnPassantAttackMove extends PawnAttackMove {
         public PawnEnPassantAttackMove(final Board board,
                                        final Piece movedPiece,
                                        final int destination,
@@ -227,13 +229,14 @@ public abstract class Move {
 
         @Override
         public Board execute() {
+            System.out.println(this.getAttackedPiece());
             final Builder builder = new Builder();
             for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
                 if (!this.movedPiece.equals(piece)) {
                     builder.setPiece(piece);
                 }
             }
-            for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
+            for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
                 if (!piece.equals(this.getAttackedPiece())) {
                     builder.setPiece(piece);
                 }
@@ -466,6 +469,7 @@ public abstract class Move {
         public static Move createMove(final Board board,
                                       final int current,
                                       final int destination) {
+            // System.out.println(board.getAllLegalMoves());
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getCurrent() == current &&
                         move.getDestination() == destination) {
