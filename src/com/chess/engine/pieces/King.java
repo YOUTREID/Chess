@@ -53,7 +53,7 @@ public class King extends Piece {
             }
         }
 
-        return ImmutableList.copyOf(legalMoves);
+        return legalMoves;
     }
 
     @Override

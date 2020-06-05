@@ -6,6 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -325,6 +326,11 @@ public class Table {
 
         private Collection<Move> pieceLegalMoves(final Board board) {
             if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
+                if (humanMovedPiece.getPieceType().isKing()) {
+                    Collection<Move> pieceLegalMoves = humanMovedPiece.calculateLegalMoves(board);
+                    pieceLegalMoves.addAll(board.currentPlayer().calculateKingCastles(board.getLegalMoves(), board.getOpponentMoves()));
+                    return pieceLegalMoves;
+                }
                 return humanMovedPiece.calculateLegalMoves(board);
             }
             return Collections.emptyList();

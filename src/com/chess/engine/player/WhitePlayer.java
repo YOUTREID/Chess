@@ -41,14 +41,11 @@ public class WhitePlayer extends Player {
         if (this.playerKing.isFirstMove() && !this.isInCheck()) {
             //whites king side castle
             if (!this.board.getTile(61).occupied() && !this.board.getTile(62).occupied()) {
-                System.out.println(1);
                 final Tile rookTile = this.board.getTile(63);
                 if (rookTile.occupied() && rookTile.getPiece().isFirstMove()) {
-                    System.out.println(2);
                     if (Player.calculateAttacksOnTile(61, opponentLegals).isEmpty() &&
                             Player.calculateAttacksOnTile(62, opponentLegals).isEmpty() &&
                             rookTile.getPiece().getPieceType().isRook()) {
-                        System.out.println(3);
                         kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 62,
                                 (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 61));
                     }
@@ -57,17 +54,19 @@ public class WhitePlayer extends Player {
 
             if (!this.board.getTile(59).occupied() && !this.board.getTile(58).occupied() &&
                     !this.board.getTile(57).occupied()) {
+                System.out.println(1);
                 final Tile rookTile = this.board.getTile(56);
                 if (rookTile.occupied() && rookTile.getPiece().isFirstMove() &&
                         Player.calculateAttacksOnTile(58, opponentLegals).isEmpty() &&
                         Player.calculateAttacksOnTile(59, opponentLegals).isEmpty() &&
                         rookTile.getPiece().getPieceType().isRook()) {
+                    System.out.println(2);
                     kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 58,
                             (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 59));
                 }
             }
         }
-        return ImmutableList.copyOf(kingCastles);
+        return kingCastles;
     }
 
     @Override
