@@ -102,6 +102,15 @@ public abstract class Move {
         return builder.build();
     }
 
+    public Board undo() {
+        final Board.Builder builder = new Builder();
+        for (final Piece piece : this.board.getAllPieces()) {
+            builder.setPiece(piece);
+        }
+        builder.setMoveMaker(this.board.currentPlayer().getAlliance());
+        return builder.build();
+    }
+
     public static class MajorAttackMove extends AttackMove {
 
         public MajorAttackMove(final Board board, final Piece pieceMoved, final int destination, final Piece pieceAttacked) {
@@ -176,7 +185,7 @@ public abstract class Move {
 
     }
 
-    public static final class PawnMove extends Move {
+    public static class PawnMove extends Move {
         public PawnMove(final Board board,
                         final Piece movedPiece,
                         final int destination) {
@@ -229,7 +238,6 @@ public abstract class Move {
 
         @Override
         public Board execute() {
-            System.out.println(this.getAttackedPiece());
             final Builder builder = new Builder();
             for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
                 if (!this.movedPiece.equals(piece)) {
@@ -247,7 +255,7 @@ public abstract class Move {
         }
     }
 
-    public static class PawnPromotion extends Move {
+    public static class PawnPromotion extends PawnMove {
 
         final Move decoratedMove;
         final Pawn promotedPawn;
@@ -287,7 +295,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return "";
+            return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()) + "-" +
+                    BoardUtils.getPositionAtCoordinate(this.destination) + "=" + Piece.Type.QUEEN;
         }
 
         @Override
@@ -469,7 +478,6 @@ public abstract class Move {
         public static Move createMove(final Board board,
                                       final int current,
                                       final int destination) {
-            // System.out.println(board.getAllLegalMoves());
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getCurrent() == current &&
                         move.getDestination() == destination) {

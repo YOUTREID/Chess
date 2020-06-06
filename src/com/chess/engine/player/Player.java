@@ -54,7 +54,7 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
-        return ((Collection<Move>)board.getAllLegalMoves()).contains(move);
+        return ((Collection<Move>)board.getLegalMoves()).contains(move);
     }
 
     public boolean isInCheck() {
@@ -84,7 +84,7 @@ public abstract class Player {
 
     public MoveTransition makeMove(final Move move) {
         if (!isMoveLegal(move)) {
-            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
+            return new MoveTransition(this.board, this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionBoard = move.execute();
 
@@ -92,10 +92,14 @@ public abstract class Player {
                 transitionBoard.currentPlayer().getLegalMoves());
 
         if (!kingAttacks.isEmpty()) {
-            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+            return new MoveTransition(this.board, this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
         }
 
-        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
+        return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
+    }
+
+    public MoveTransition unMakeMove(final Move move) {
+        return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();

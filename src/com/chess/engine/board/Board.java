@@ -21,6 +21,7 @@ public class Board {
     private final Player currentPlayer;
 
     private final Pawn enPassantPawn;
+    private boolean AIShowingThinking;
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
@@ -69,8 +70,8 @@ public class Board {
         return this.whitePieces;
     }
 
-    private String formatPrint(Tile tile) {
-        return tile.toString();
+    public Iterable<Piece> getAllPieces() {
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
     }
 
     public Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
@@ -165,6 +166,14 @@ public class Board {
 
     public Player currentPlayer() {
         return this.currentPlayer;
+    }
+
+    public boolean isAIShowingProcess() {
+        return AIShowingThinking;
+    }
+
+    public void setAIShowingThinking(boolean AIShowingThinking) {
+        this.AIShowingThinking = AIShowingThinking;
     }
 
     public static class Builder {

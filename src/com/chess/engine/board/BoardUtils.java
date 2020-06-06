@@ -77,6 +77,15 @@ public class BoardUtils {
     public static String getPositionAtCoordinate(final int coordinate) {
         return ALGEBRAIC_NOTATION.get(coordinate);
     }
+
+    public static boolean isThreatenedBoardImmediate(final Board board) {
+        return board.whitePlayer().isInCheck() || board.blackPlayer().isInCheck();
+    }
+
+    public static boolean isEndGame(final Board board) {
+        return board.currentPlayer().isInCheckMate() ||
+                board.currentPlayer().isInStaleMate();
+    }
 }
 
 
