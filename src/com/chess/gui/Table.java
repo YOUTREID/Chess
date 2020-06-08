@@ -50,11 +50,10 @@ public class Table extends Observable {
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
 
-    private static int stepNum = 1;
-
     private Move computerMove;
 
     private boolean highlightLegalMoves;
+    private boolean alphaBetaOn = true;
 
     private Table() {
         this.gameFrame = new JFrame("JChess");
@@ -178,6 +177,17 @@ public class Table extends Observable {
 
         optionsMenu.add(setupGameMenuItem);
 
+        optionsMenu.addSeparator();
+        final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("Alpha beta pruning", true);
+        alphaBetaToggle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                alphaBetaOn = alphaBetaToggle.isSelected();
+            }
+        });
+
+        optionsMenu.add(alphaBetaToggle);
+
         return optionsMenu;
     }
 
@@ -186,14 +196,16 @@ public class Table extends Observable {
         notifyObservers(gameSetup);
     }
 
+    public boolean isAlphaBetaOn() {
+        return alphaBetaOn;
+    }
+
     private static class TableGameAIWatcher implements Observer {
         @Override
         public void update(Observable o, Object arg) {
             if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) &&
                     !Table.get().getGameBoard().currentPlayer().isInCheckMate() &&
                     !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
-                System.out.println("Step " + stepNum + ": ");
-                stepNum++;
                 System.out.println(Table.get().getGameBoard().currentPlayer() + " is set to AI, thinking....");
                 final AIThinkTank thinkTank = new AIThinkTank();
                 thinkTank.execute();
@@ -271,14 +283,27 @@ public class Table extends Observable {
 
         @Override
         protected Move doInBackground() throws Exception {
+            final Move bestMove;
+//            final Move bookMove = Table.get().getUseBook()
+//                    ? MySqlGamePersistence.get().getNextBestMove(Table.get().getGameBoard(),
+//                    Table.get().getGameBoard().currentPlayer(),
+//                    Table.get().getMoveLog().getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""))
+//                    : Move.NULL_MOVE;
+//            if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
+//                bestMove = bookMove;
+//            }
             final int moveNumber = Table.get().getMoveLog().size();
             final int quiescenceFactor = 2000 + (100 * moveNumber);
-//            final MiniMax miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
-//            final Move bestMove = miniMax.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
-            final AlphaBeta strategy = new AlphaBeta(1500);
-            strategy.addObserver(Table.get().getDebugPanel());
-            final Move bestMove = strategy.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
-            return bestMove;
+            if (Table.get().isAlphaBetaOn()) {
+                final AlphaBeta strategy = new AlphaBeta(quiescenceFactor); //1500
+                strategy.addObserver(Table.get().getDebugPanel());
+                bestMove = strategy.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                return bestMove;
+            } else {
+                final MiniMax miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
+                bestMove = miniMax.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                return bestMove;
+            }
         }
 
         @Override
@@ -420,7 +445,6 @@ public class Table extends Observable {
                             destinationTile = chessBoard.getTile(tileID);
                             Move move = Move.MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinates(),
                                     destinationTile.getTileCoordinates());
-                            // System.out.println(move);
                             MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getToBoard();
@@ -439,6 +463,7 @@ public class Table extends Observable {
                                     Table.get().moveMadeUpdate(PlayerType.HUMAN);
                                 }
                                 boardPanel.drawBoard(chessBoard);
+                                debugPanel.redo();
                             }
                         });
                     }

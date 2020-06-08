@@ -27,6 +27,11 @@ public class Rook extends Piece {
     }
 
     @Override
+    public int locationBonus() {
+        return this.pieceAlliance.queenBonus(this.piecePosition);
+    }
+
+    @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidateOffset : POSSIBLE_OFFSETS) {

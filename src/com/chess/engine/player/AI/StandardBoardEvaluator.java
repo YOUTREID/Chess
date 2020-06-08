@@ -3,50 +3,80 @@ package com.chess.engine.player.AI;
 import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
+import com.chess.engine.player.AI.KingSafetyAnalyzer.KingDistance;
+import com.chess.engine.player.AI.BoardEvaluator;
+import com.google.common.annotations.VisibleForTesting;
 
-public final class StandardBoardEvaluator implements BoardEvaluator {
+public final class StandardBoardEvaluator
+        implements BoardEvaluator {
 
-    private static final int CHECK_BONUS = 50;
-    private static final int CHECK_MATE_BONUS = 10000;
-    private static final int DEPTH_BONUS = 100;
-    private static final int CASTLE_BONUS = 60;
+    private final static int CHECK_MATE_BONUS = 10000;
+    private final static int CHECK_BONUS = 50;
+    private final static int CASTLED_BONUS = 65;
+    private final static int CASTLE_CAPABLE_BONUS = 25;
+    private final static int MOBILITY_BONUS = 1;
 
     @Override
-    public int evaluate(Board board, int depth) {
-        return scorePlayer(board, board.whitePlayer(), depth) -
-                scorePlayer(board, board.blackPlayer(), depth);
+    public int evaluate(final Board board,
+                        final int depth) {
+        return score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
     }
 
-    private int scorePlayer(Board board, Player player, int depth) {
-        return pieceValue(player) + mobility(player) + check(player) +
-                checkmate(player, depth) + castled(player);
+    @VisibleForTesting
+    private static int score(final Player player,
+                             final int depth) {
+        return mobility(player) +
+                checkmate(player, depth) +
+                castle(player) +
+                pieceValueAndLocation(player) +
+                pawnStructure(player);
     }
 
-    private int castled(Player player) {
-        return player.isCastled() ? CASTLE_BONUS : 0;
+    private static int pieceValueAndLocation(final Player player) {
+        int pieceValuationScore = 0;
+        for (final Piece piece : player.getActivePieces()) {
+            pieceValuationScore += piece.getPieceValue() + piece.locationBonus();
+        }
+        return pieceValuationScore;
     }
 
-    private int checkmate(Player player, int depth) {
-        return player.getOpponent().isInCheck() ? CHECK_MATE_BONUS * depthBonus(depth) : 0;
+    private static int mobility(final Player player) {
+        return MOBILITY_BONUS * player.getLegalMoves().size();
     }
 
-    private static int depthBonus(int depth) {
-        return depth == 0 ? 1 : DEPTH_BONUS * depth;
+    private static int checkmate(final Player player,
+                                 final int depth) {
+        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player, depth);
     }
 
-    private int check(Player player) {
+    private static int check(final Player player,
+                             final int depth) {
         return player.getOpponent().isInCheck() ? CHECK_BONUS : 0;
     }
 
-    private int mobility(Player player) {
-        return player.getLegalMoves().size();
+    private static int depthBonus(final int depth) {
+        return depth == 0 ? 1 : 100 * depth;
     }
 
-    private static int pieceValue(Player player) {
-        int pieceValueScore = 0;
-        for (Piece piece : player.getActivePieces()) {
-            pieceValueScore += piece.getPieceValue();
-        }
-        return pieceValueScore;
+    private static int castleCapable(final Player player) {
+        return (player.isKingSideCastleCapable() || player.isQueenSideCastleCapable()) ? CASTLE_CAPABLE_BONUS : 0;
     }
+
+    private static int castle(final Player player) {
+        return player.isCastled() ? CASTLED_BONUS : castleCapable(player);
+    }
+
+    private static int pawnStructure(final Player player) {
+        return PawnStructureAnalyzer.get().pawnStructureScore(player);
+    }
+
+    private static int kingSafety(final Player player) {
+        final KingDistance kingDistance = KingSafetyAnalyzer.get().calculateKingTropism(player);
+        return ((kingDistance.getEnemyPiece().getPieceValue() / 100) * kingDistance.getDistance());
+    }
+
+    private static int rookStructure(final Board board, final Player player) {
+        return RookStructureAnalyzer.get().rookStructureScore(board, player);
+    }
+
 }

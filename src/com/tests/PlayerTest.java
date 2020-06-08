@@ -57,12 +57,12 @@ public class PlayerTest {
     public void testDiscoveredCheck() {
         final Board.Builder builder = new Board.Builder();
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Rook(Alliance.BLACK, 24));
         // White Layout
         builder.setPiece(new Bishop(Alliance.WHITE, 44));
         builder.setPiece(new Rook(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 58, false));
+        builder.setPiece(new King(Alliance.WHITE, 58, false, false));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();

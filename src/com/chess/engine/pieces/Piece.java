@@ -65,6 +65,8 @@ public abstract class Piece {
         return this.pieceType;
     }
 
+    public abstract int locationBonus();
+
     public abstract Collection<Move> calculateLegalMoves(final Board board);
 
     public abstract Piece movePiece(Move move);
@@ -82,6 +84,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isPawn() {
+                return true;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -89,6 +96,11 @@ public abstract class Piece {
         KNIGHT("N", 300) {
             @Override
             public boolean isKing() {
+                return false;
+            }
+
+            @Override
+            public boolean isPawn() {
                 return false;
             }
 
@@ -104,6 +116,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isPawn() {
+                return false;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -111,6 +128,11 @@ public abstract class Piece {
         ROOK("R", 500) {
             @Override
             public boolean isKing() {
+                return false;
+            }
+
+            @Override
+            public boolean isPawn() {
                 return false;
             }
 
@@ -126,6 +148,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isPawn() {
+                return false;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -134,6 +161,11 @@ public abstract class Piece {
             @Override
             public boolean isKing() {
                 return true;
+            }
+
+            @Override
+            public boolean isPawn() {
+                return false;
             }
 
             @Override
@@ -160,7 +192,7 @@ public abstract class Piece {
         }
 
         public abstract boolean isKing();
-
+        public abstract boolean isPawn();
         public abstract boolean isRook();
     }
 

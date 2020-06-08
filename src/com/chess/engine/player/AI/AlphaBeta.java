@@ -80,7 +80,7 @@ public class AlphaBeta extends Observable implements MoveStrategy {
         int currentValue;
         int moveCounter = 1;
         final int numMoves = this.moveSorter.sort(board.currentPlayer().getLegalMoves()).size();
-        System.out.println(board.currentPlayer() + " thinking with depth = " + depth);
+        System.out.println(board.currentPlayer() + " thinking with depth = " + depth + " (pruning enabled)");
         System.out.println("\tOrdered moves! : " + this.moveSorter.sort(board.currentPlayer().getLegalMoves()));
         for (final Move move : this.moveSorter.sort(board.currentPlayer().getLegalMoves())) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);

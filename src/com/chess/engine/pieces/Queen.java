@@ -26,6 +26,11 @@ public class Queen extends Piece {
     }
 
     @Override
+    public int locationBonus() {
+        return this.pieceAlliance.queenBonus(this.piecePosition);
+    }
+
+    @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
 
         final List<Move> legalMoves = new ArrayList<>();

@@ -32,11 +32,11 @@ class BoardTest {
     public void testPlainKingMove() {
         final Board.Builder builder = new Board.Builder();
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Pawn(Alliance.BLACK, 12));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();
