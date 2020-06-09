@@ -7,7 +7,6 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.AI.AlphaBeta;
 import com.chess.engine.player.AI.MiniMax;
-import com.chess.engine.player.AI.MoveStrategy;
 import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.Lists;
 
@@ -29,7 +28,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table extends Observable {
-    private final static Dimension OUTER_DIMENSION = new Dimension(780, 820);
+    private final static Dimension OUTER_DIMENSION = new Dimension(780, 710);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
@@ -44,23 +43,27 @@ public class Table extends Observable {
     private final String defaultPieceImagePath = "art/simple/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
+    private final Color lastMovedTileColor = Color.decode("#00ff26");
+
     private Board chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
-
+    private static MusicPlayer mp;
     private Move computerMove;
 
+    private int lastToTile = -1;
+    private int lastFromTile = -1;
     private boolean highlightLegalMoves;
     private boolean alphaBetaOn = true;
+    private boolean useBook;
 
     private Table() {
         this.gameFrame = new JFrame("JChess");
         this.gameFrame.setLayout(new BorderLayout());
         final JMenuBar tableMenuBar = createTableMenuBar();
         this.gameFrame.setJMenuBar(tableMenuBar);
-        this.gameFrame.setSize(OUTER_DIMENSION);
 
         this.chessBoard = Board.createStandardBoard();
         this.gameHistoryPanel = new GameHistoryPanel();
@@ -76,7 +79,9 @@ public class Table extends Observable {
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
-        this.gameFrame.add(debugPanel, BorderLayout.SOUTH);
+        this.gameFrame.add(this.debugPanel, BorderLayout.SOUTH);
+        this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.gameFrame.setSize(OUTER_DIMENSION);
         this.gameFrame.setVisible(true);
     }
 
@@ -94,6 +99,14 @@ public class Table extends Observable {
 
     private Board getGameBoard() {
         return this.chessBoard;
+    }
+
+    private boolean getUseBook() {
+        return this.useBook;
+    }
+
+    private boolean getHighlightLegalMoves() {
+        return this.highlightLegalMoves;
     }
 
     private DebugPanel getDebugPanel() {
@@ -161,6 +174,17 @@ public class Table extends Observable {
         });
 
         preferencesMenu.add(legalMoveHighlight);
+
+        final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem("Use Book Moves", true);
+        cbUseBookMoves.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                useBook = cbUseBookMoves.isSelected();
+            }
+        });
+
+        preferencesMenu.add(cbUseBookMoves);
+
         return preferencesMenu;
     }
 
@@ -178,7 +202,7 @@ public class Table extends Observable {
         optionsMenu.add(setupGameMenuItem);
 
         optionsMenu.addSeparator();
-        final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("Alpha beta pruning", true);
+        final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("AI optimization", true);
         alphaBetaToggle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -284,24 +308,18 @@ public class Table extends Observable {
         @Override
         protected Move doInBackground() throws Exception {
             final Move bestMove;
-//            final Move bookMove = Table.get().getUseBook()
-//                    ? MySqlGamePersistence.get().getNextBestMove(Table.get().getGameBoard(),
-//                    Table.get().getGameBoard().currentPlayer(),
-//                    Table.get().getMoveLog().getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""))
-//                    : Move.NULL_MOVE;
-//            if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
-//                bestMove = bookMove;
-//            }
             final int moveNumber = Table.get().getMoveLog().size();
             final int quiescenceFactor = 2000 + (100 * moveNumber);
             if (Table.get().isAlphaBetaOn()) {
                 final AlphaBeta strategy = new AlphaBeta(quiescenceFactor); //1500
                 strategy.addObserver(Table.get().getDebugPanel());
                 bestMove = strategy.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                mp.playMusic("art/sound/move.wav");
                 return bestMove;
             } else {
                 final MiniMax miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
                 bestMove = miniMax.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                mp.playMusic("art/sound/move.wav");
                 return bestMove;
             }
         }
@@ -417,9 +435,7 @@ public class Table extends Observable {
     }
 
     private class TilePanel extends JPanel {
-
         private final int tileID;
-
         TilePanel(final BoardPanel boardPanel, final int tileID) {
             super(new GridBagLayout());
             this.tileID = tileID;
@@ -449,6 +465,9 @@ public class Table extends Observable {
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getToBoard();
                                 moveLog.addMove(move);
+                                mp.playMusic("art/sound/move.wav");
+                                lastToTile = tileID;
+                                lastFromTile = sourceTile.getTileCoordinates();
                             }
                             sourceTile = null;
                             destinationTile = null;
@@ -555,6 +574,14 @@ public class Table extends Observable {
                     BoardUtils.FIRST_RANK[this.tileID]) {
                 setBackground(this.tileID % 2 != 0 ? lightTileColor : darkTileColor);
             }
+            if (this.tileID == lastToTile)
+                setBackground(lastMovedTileColor);
+            if (this.tileID == lastFromTile)
+                setBackground(lastMovedTileColor);
+        }
+
+        private void changeColor() {
+            setBackground(lastMovedTileColor);
         }
 
     }

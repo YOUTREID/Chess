@@ -10,12 +10,14 @@ import javax.swing.JTextArea;
 
 class DebugPanel extends JPanel implements Observer {
 
-    private static final Dimension CHAT_PANEL_DIMENSION = new Dimension(780, 150);
+    private static final Dimension CHAT_PANEL_DIMENSION = new Dimension(780, 60);
     private final JTextArea jTextArea;
+    private final float fontSize = 14f;
 
     public DebugPanel() {
         super(new BorderLayout());
         this.jTextArea = new JTextArea("");
+        this.jTextArea.setFont(this.jTextArea.getFont().deriveFont(fontSize));
         add(this.jTextArea);
         setPreferredSize(CHAT_PANEL_DIMENSION);
         validate();
@@ -30,6 +32,7 @@ class DebugPanel extends JPanel implements Observer {
     public void update(final Observable obs,
                        final Object obj) {
         this.jTextArea.setText(obj.toString().trim());
+        // System.out.println(obj);
         redo();
     }
 
