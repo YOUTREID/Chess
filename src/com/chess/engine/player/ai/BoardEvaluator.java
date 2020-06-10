@@ -1,4 +1,4 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import com.chess.engine.board.Board;
 

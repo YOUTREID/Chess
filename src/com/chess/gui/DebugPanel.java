@@ -12,11 +12,11 @@ class DebugPanel extends JPanel implements Observer {
 
     private static final Dimension CHAT_PANEL_DIMENSION = new Dimension(780, 60);
     private final JTextArea jTextArea;
-    private final float fontSize = 14f;
 
-    public DebugPanel() {
+    DebugPanel() {
         super(new BorderLayout());
         this.jTextArea = new JTextArea("");
+        float fontSize = 14f;
         this.jTextArea.setFont(this.jTextArea.getFont().deriveFont(fontSize));
         add(this.jTextArea);
         setPreferredSize(CHAT_PANEL_DIMENSION);
@@ -24,7 +24,7 @@ class DebugPanel extends JPanel implements Observer {
         setVisible(true);
     }
 
-    public void redo() {
+    void redo() {
         validate();
     }
 

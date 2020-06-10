@@ -15,8 +15,8 @@ import java.util.List;
 public abstract class Player {
 
     protected final Board board;
-    protected final King playerKing;
-    protected final Collection<Move> legalMoves;
+    final King playerKing;
+    private final Collection<Move> legalMoves;
     private final boolean isInCheck;
 
     Player(final Board board, final Collection<Move> legalMoves, final Collection<Move> opponentMoves) {
@@ -26,7 +26,7 @@ public abstract class Player {
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
     }
 
-    protected static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
+    static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
         final List<Move> attackMoves = new ArrayList<>();
         for (final Move move : moves) {
             if (piecePosition == move.getDestination()) {
@@ -41,10 +41,10 @@ public abstract class Player {
     }
 
     public Collection<Move> getLegalMoves() {
-        return (Collection<Move>) board.getLegalMoves();
+        return board.getLegalMoves();
     }
 
-    protected King establishKing() {
+    private King establishKing() {
         for (final Piece piece : getActivePieces()) {
             if (piece.getPieceType().isKing()) {
                 return (King) piece;
@@ -53,8 +53,8 @@ public abstract class Player {
         throw new RuntimeException("Unreachable. Invalid board.");
     }
 
-    public boolean isMoveLegal(final Move move) {
-        return ((Collection<Move>)board.getLegalMoves()).contains(move);
+    private boolean isMoveLegal(final Move move) {
+        return board.getLegalMoves().contains(move);
     }
 
     public boolean isInCheck() {
@@ -62,20 +62,20 @@ public abstract class Player {
     }
 
     public boolean isInCheckMate() {
-        return this.isInCheck && !hasEscapeMoves();
+        return this.isInCheck && hasNoEscapeMoves();
     }
 
-    protected boolean hasEscapeMoves() {
+    private boolean hasNoEscapeMoves() {
         for (final Move move : this.legalMoves) {
             final MoveTransition transition = makeMove(move);
             if (transition.getMoveStatus().isDone())
-                return true;
+                return false;
         }
-        return false;
+        return true;
     }
 
     public boolean isInStaleMate() {
-        return !this.isInCheck && !hasEscapeMoves();
+        return !this.isInCheck && hasNoEscapeMoves();
     }
 
     public boolean isCastled() {

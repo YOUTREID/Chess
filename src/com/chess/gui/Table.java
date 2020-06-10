@@ -5,16 +5,14 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
-import com.chess.engine.player.AI.AlphaBeta;
-import com.chess.engine.player.AI.MiniMax;
+import com.chess.engine.player.ai.AlphaBeta;
+import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -28,7 +26,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table extends Observable {
-    private final static Dimension OUTER_DIMENSION = new Dimension(780, 710);
+    private final static Dimension OUTER_DIMENSION = new Dimension(740, 710);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
@@ -39,18 +37,15 @@ public class Table extends Observable {
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
     private final GameSetup gameSetup;
-    private final String imageFormat = ".png";
-    private final String defaultPieceImagePath = "art/simple/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
-    private final Color lastMovedTileColor = Color.decode("#00ff26");
+    private final Color lastMovedTileColor = Color.decode("#c7c416");
 
     private Board chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
-    private static MusicPlayer mp;
     private Move computerMove;
 
     private int lastToTile = -1;
@@ -72,7 +67,7 @@ public class Table extends Observable {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new TableGameAIWatcher());
-        this.gameSetup = new GameSetup(this.gameFrame, true);
+        this.gameSetup = new GameSetup(this.gameFrame);
 
         this.boardDirection = BoardDirection.NORMAL;
         this.highlightLegalMoves = true;
@@ -132,21 +127,11 @@ public class Table extends Observable {
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu("File");
         final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Open PGN file");
-            }
-        });
+        openPGN.addActionListener(e -> System.out.println("Open PGN file"));
         fileMenu.add(openPGN);
 
         final JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-            }
-        });
+        exit.addActionListener(e -> gameFrame.dispose());
         fileMenu.add(exit);
 
         return fileMenu;
@@ -155,33 +140,20 @@ public class Table extends Observable {
     private JMenu createPreferencesMenu() {
         final JMenu preferencesMenu = new JMenu("Preferences");
         final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
-        flipBoardMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boardDirection = boardDirection.opposite();
-                boardPanel.drawBoard(chessBoard);
-            }
+        flipBoardMenuItem.addActionListener(e -> {
+            boardDirection = boardDirection.opposite();
+            boardPanel.drawBoard(chessBoard);
         });
         preferencesMenu.add(flipBoardMenuItem);
 
         preferencesMenu.addSeparator();
         final JCheckBoxMenuItem legalMoveHighlight = new JCheckBoxMenuItem("Highlight Legal Moves", true);
-        legalMoveHighlight.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                highlightLegalMoves = legalMoveHighlight.isSelected();
-            }
-        });
+        legalMoveHighlight.addActionListener(e -> highlightLegalMoves = legalMoveHighlight.isSelected());
 
         preferencesMenu.add(legalMoveHighlight);
 
         final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem("Use Book Moves", true);
-        cbUseBookMoves.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                useBook = cbUseBookMoves.isSelected();
-            }
-        });
+        cbUseBookMoves.addActionListener(e -> useBook = cbUseBookMoves.isSelected());
 
         preferencesMenu.add(cbUseBookMoves);
 
@@ -191,36 +163,28 @@ public class Table extends Observable {
     private JMenu createOptionsMenu() {
         final JMenu optionsMenu = new JMenu("Options");
         final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
-        setupGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Table.get().getGameSetup().promptUser();
-                Table.get().setupUpdate(Table.get().getGameSetup());
-            }
+        setupGameMenuItem.addActionListener(e -> {
+            Table.get().getGameSetup().promptUser();
+            Table.get().setupUpdate(Table.get().getGameSetup());
         });
 
         optionsMenu.add(setupGameMenuItem);
 
         optionsMenu.addSeparator();
         final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("AI optimization", true);
-        alphaBetaToggle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alphaBetaOn = alphaBetaToggle.isSelected();
-            }
-        });
+        alphaBetaToggle.addActionListener(e -> alphaBetaOn = alphaBetaToggle.isSelected());
 
         optionsMenu.add(alphaBetaToggle);
 
         return optionsMenu;
     }
 
-    public void setupUpdate(GameSetup gameSetup) {
+    private void setupUpdate(GameSetup gameSetup) {
         setChanged();
         notifyObservers(gameSetup);
     }
 
-    public boolean isAlphaBetaOn() {
+    private boolean isAlphaBetaOn() {
         return alphaBetaOn;
     }
 
@@ -252,11 +216,11 @@ public class Table extends Observable {
         }
     }
 
-    public void updateGameBoard(Board board) {
+    private void updateGameBoard(Board board) {
         this.chessBoard = board;
     }
 
-    public void updateComputerMove(Move move) {
+    private void updateComputerMove(Move move) {
         this.computerMove = move;
     }
 
@@ -306,7 +270,7 @@ public class Table extends Observable {
         }
 
         @Override
-        protected Move doInBackground() throws Exception {
+        protected Move doInBackground() {
             final Move bestMove;
             final int moveNumber = Table.get().getMoveLog().size();
             final int quiescenceFactor = 2000 + (100 * moveNumber);
@@ -314,14 +278,12 @@ public class Table extends Observable {
                 final AlphaBeta strategy = new AlphaBeta(quiescenceFactor); //1500
                 strategy.addObserver(Table.get().getDebugPanel());
                 bestMove = strategy.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
-                mp.playMusic("art/sound/move.wav");
-                return bestMove;
             } else {
                 final MiniMax miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
                 bestMove = miniMax.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
-                mp.playMusic("art/sound/move.wav");
-                return bestMove;
             }
+            MusicPlayer.playMusic("art/sound/move.wav");
+            return bestMove;
         }
 
         @Override
@@ -376,35 +338,36 @@ public class Table extends Observable {
         COMPUTER
     }
 
-    public static class MoveLog {
+    static class MoveLog {
         private final List<Move> moves;
 
         MoveLog() {
             this.moves = new ArrayList<>();
         }
 
-        public List<Move> getMoves() {
+        List<Move> getMoves() {
             return this.moves;
         }
 
-        public void addMove(final Move move) {
+        void addMove(final Move move) {
             this.moves.add(move);
         }
 
-        public int size() {
+        int size() {
             return this.moves.size();
         }
 
-        public void clear() {
+        void clear() {
             this.moves.clear();
         }
 
-        public Move removeMove(final int index) {
+        Move removeMove(final int index) {
             return this.moves.remove(index);
         }
 
-        public boolean removeMove(final Move move) {
-            return this.moves.remove(move);
+        void removeMove(final Move move) {
+            // return this.moves.remove(move);
+            this.moves.remove(move);
         }
     }
 
@@ -423,7 +386,7 @@ public class Table extends Observable {
             validate();
         }
 
-        public void drawBoard(final Board board) {
+        void drawBoard(final Board board) {
             removeAll();
             for (final TilePanel tilePanel : boardDirection.traverse(boardTiles)) {
                 tilePanel.drawTile(board);
@@ -465,7 +428,7 @@ public class Table extends Observable {
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getToBoard();
                                 moveLog.addMove(move);
-                                mp.playMusic("art/sound/move.wav");
+                                MusicPlayer.playMusic("art/sound/move.wav");
                                 lastToTile = tileID;
                                 lastFromTile = sourceTile.getTileCoordinates();
                             }
@@ -473,17 +436,14 @@ public class Table extends Observable {
                             destinationTile = null;
                             humanMovedPiece = null;
                         }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
-                                takenPiecesPanel.redo(moveLog);
-                                if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                                    Table.get().moveMadeUpdate(PlayerType.HUMAN);
-                                }
-                                boardPanel.drawBoard(chessBoard);
-                                debugPanel.redo();
+                        SwingUtilities.invokeLater(() -> {
+                            gameHistoryPanel.redo(chessBoard, moveLog);
+                            takenPiecesPanel.redo(moveLog);
+                            if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+                                Table.get().moveMadeUpdate(PlayerType.HUMAN);
                             }
+                            boardPanel.drawBoard(chessBoard);
+                            debugPanel.redo();
                         });
                     }
                 }
@@ -512,7 +472,7 @@ public class Table extends Observable {
             validate();
         }
 
-        public void drawTile(final Board board) {
+        void drawTile(final Board board) {
             assignTileColor();
             assignTilePiece(board);
             highlightLegals(board);
@@ -524,6 +484,8 @@ public class Table extends Observable {
             this.removeAll();
             if (board.getTile(this.tileID).occupied()) {
                 try {
+                    String imageFormat = ".png";
+                    String defaultPieceImagePath = "art/simple/";
                     final BufferedImage image =
                             ImageIO.read(new File(defaultPieceImagePath +
                                     board.getTile(this.tileID).getPiece().getPieceAlliance().toString().substring(0, 1) +

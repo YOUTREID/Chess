@@ -5,14 +5,11 @@ import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Move {
 
     protected final Board board;
-    protected final Piece movedPiece;
-    protected final int destination;
+    final Piece movedPiece;
+    final int destination;
     protected final boolean isFirstMove;
 
     private Move(final Board board,
@@ -24,9 +21,9 @@ public abstract class Move {
         this.isFirstMove = movedPiece.isFirstMove();
     }
 
-    private Move(final Board board, final int destination) {
-        this.board = board;
-        this.destination = destination;
+    private Move() {
+        this.board = null;
+        this.destination = 65;
         this.movedPiece = null;
         this.isFirstMove = false;
     }
@@ -149,10 +146,10 @@ public abstract class Move {
     public static class AttackMove extends Move {
         final Piece attackedPiece;
 
-        public AttackMove(final Board board,
-                          final Piece movedPiece,
-                          final int destinationCoordinate,
-                          final Piece attackedPiece) {
+        AttackMove(final Board board,
+                   final Piece movedPiece,
+                   final int destinationCoordinate,
+                   final Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate);
             this.attackedPiece = attackedPiece;
         }
@@ -347,16 +344,16 @@ public abstract class Move {
 
     static abstract class CastleMove extends Move {
 
-        protected final Rook castleRook;
-        protected final int castleRookStart;
-        protected final int castleRookDestination;
+        final Rook castleRook;
+        final int castleRookStart;
+        final int castleRookDestination;
 
-        public CastleMove(final Board board,
-                          final Piece movedPiece,
-                          final int destination,
-                          final Rook castleRook,
-                          final int castleRookStart,
-                          final int castleRookDestination
+        CastleMove(final Board board,
+                   final Piece movedPiece,
+                   final int destination,
+                   final Rook castleRook,
+                   final int castleRookStart,
+                   final int castleRookDestination
         ) {
             super(board, movedPiece, destination);
             this.castleRook = castleRook;
@@ -364,7 +361,7 @@ public abstract class Move {
             this.castleRookDestination = castleRookDestination;
         }
 
-        public Rook getCastleRook() {
+        Rook getCastleRook() {
             return this.castleRook;
         }
 
@@ -456,7 +453,7 @@ public abstract class Move {
 
     public static final class NullMove extends Move {
         public NullMove() {
-            super(null, 65);
+            super();
         }
 
         @Override

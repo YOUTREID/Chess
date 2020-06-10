@@ -1,4 +1,4 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +34,7 @@ public final class KingSafetyAnalyzer {
         return columns;
     }
 
-    public KingDistance calculateKingTropism(final Player player) {
+    KingDistance calculateKingTropism(final Player player) {
         final int playerKingSquare = player.getPlayerKing().getPiecePosition();
         final Collection<Move> enemyMoves = player.getOpponent().getLegalMoves();
         Piece closestPiece = null;
@@ -117,11 +117,11 @@ public final class KingSafetyAnalyzer {
             this.distance = distance;
         }
 
-        public Piece getEnemyPiece() {
+        Piece getEnemyPiece() {
             return enemyPiece;
         }
 
-        public int getDistance() {
+        int getDistance() {
             return distance;
         }
 

@@ -1,7 +1,6 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,8 +16,8 @@ public final class PawnStructureAnalyzer {
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
 
-    public static final int ISOLATED_PENALTY = -10;
-    public static final int DOUBLED_PENALTY = -10;
+    private static final int ISOLATED_PENALTY = -10;
+    private static final int DOUBLED_PENALTY = -10;
 
     private PawnStructureAnalyzer() {
     }
@@ -40,7 +39,7 @@ public final class PawnStructureAnalyzer {
         return columns;
     }
 
-    public int pawnStructureScore(final Player player) {
+    int pawnStructureScore(final Player player) {
         final Collection<Piece> playerPawns = calculatePlayerPawns(player);
         final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(playerPawns);
         return calculateIsolatedPawnPenalty(pawnsOnColumnTable);

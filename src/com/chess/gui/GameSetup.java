@@ -2,8 +2,6 @@ package com.chess.gui;
 
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import com.chess.engine.Alliance;
@@ -14,15 +12,14 @@ class GameSetup extends JDialog {
 
     private PlayerType whitePlayerType;
     private PlayerType blackPlayerType;
-    private JSpinner searchDepthSpinner;
+    private final JSpinner searchDepthSpinner;
 
-    private static int depth = 4;
+    private static final int depth = 4;
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
-    GameSetup(final JFrame frame,
-              final boolean modal) {
-        super(frame, modal);
+    GameSetup(final JFrame frame) {
+        super(frame);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
         final JRadioButton whiteHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton whiteComputerButton = new JRadioButton(COMPUTER_TEXT);
@@ -48,24 +45,20 @@ class GameSetup extends JDialog {
         myPanel.add(blackComputerButton);
 
         myPanel.add(new JLabel("Search"));
-        this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(4, 0, 10, 1));
+        this.searchDepthSpinner = addLabeledSpinner(myPanel, new SpinnerNumberModel(4, 0, 10, 1));
 
         final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("OK");
 
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                whitePlayerType = whiteComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
-                blackPlayerType = blackComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
-                GameSetup.this.setVisible(false);
-            }
+        okButton.addActionListener(e -> {
+            whitePlayerType = whiteComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
+            blackPlayerType = blackComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
+            GameSetup.this.setVisible(false);
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Cancel");
-                GameSetup.this.setVisible(false);
-            }
+        cancelButton.addActionListener(e -> {
+            System.out.println("Cancel");
+            GameSetup.this.setVisible(false);
         });
 
         myPanel.add(cancelButton);
@@ -88,16 +81,16 @@ class GameSetup extends JDialog {
         return getBlackPlayerType() == PlayerType.COMPUTER;
     }
 
-    PlayerType getWhitePlayerType() {
+    private PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
 
-    PlayerType getBlackPlayerType() {
+    private PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
     }
 
-    private static JSpinner addLabeledSpinner(Container c, String label, SpinnerModel model) {
-        final JLabel l = new JLabel(label);
+    private static JSpinner addLabeledSpinner(Container c, SpinnerModel model) {
+        final JLabel l = new JLabel("Search Depth");
         c.add(l);
         final JSpinner spinner = new JSpinner(model);
         l.setLabelFor(spinner);

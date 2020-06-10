@@ -3,17 +3,15 @@ package com.tests;
 import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
 import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Pawn;
-import com.chess.engine.pieces.Piece;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
-    public void initialBoard() {
+    void initialBoard() {
 
         final Board board = Board.createStandardBoard();
         assertEquals(board.currentPlayer().getLegalMoves().size(), 20);
@@ -29,7 +27,7 @@ class BoardTest {
     }
 
     @Test
-    public void testPlainKingMove() {
+    void testPlainKingMove() {
         final Board.Builder builder = new Board.Builder();
         // Black Layout
         builder.setPiece(new King(Alliance.BLACK, 4, false, false));
@@ -53,7 +51,7 @@ class BoardTest {
     }
 
     @Test
-    public void testAlgebraicNotation() {
+    void testAlgebraicNotation() {
         assertEquals(BoardUtils.getPositionAtCoordinate(0), "a8");
         assertEquals(BoardUtils.getPositionAtCoordinate(1), "b8");
         assertEquals(BoardUtils.getPositionAtCoordinate(2), "c8");

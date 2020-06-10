@@ -6,13 +6,12 @@ import com.chess.engine.board.Move;
 import com.chess.engine.player.MoveTransition;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CastlingTest {
+class CastlingTest {
 
     @Test
-    public void testWhiteKingSideCastle() {
+    void testWhiteKingSideCastle() {
         final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e2"),
@@ -55,7 +54,7 @@ public class CastlingTest {
     }
 
     @Test
-    public void testWhiteQueenSideCastle() {
+    void testWhiteQueenSideCastle() {
         final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e2"),
@@ -118,7 +117,7 @@ public class CastlingTest {
     }
 
     @Test
-    public void testBlackKingSideCastle() {
+    void testBlackKingSideCastle() {
         final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e2"),
@@ -166,7 +165,7 @@ public class CastlingTest {
     }
 
     @Test
-    public void testBlackQueenSideCastle() {
+    void testBlackQueenSideCastle() {
         final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e2"),
@@ -235,7 +234,7 @@ public class CastlingTest {
     }
 
     @Test
-    public void testCastleBugOne() {
+    void testCastleBugOne() {
         final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e2"),
@@ -292,21 +291,5 @@ public class CastlingTest {
                         Move.MoveFactory.createMove(t10.getToBoard(), BoardUtils.getCoordinateAtPosition("b1"),
                                 BoardUtils.getCoordinateAtPosition("c3")));
         assertTrue(t11.getMoveStatus().isDone());
-
-//        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
-//
-//        moveStrategy.execute(t11.getTransitionBoard());
     }
-
-//    @Test
-//    public void testNoCastlingOutOfCheck() {
-//        final Board board = FenUtilities.createGameFromFEN("r3k2r/1pN1nppp/p3p3/3p4/8/8/PPPK1PPP/R6R b kq - 1 18");
-//        final Move illegalCastleMove = Move.MoveFactory
-//                .createMove(board, BoardUtils.getCoordinateAtPosition("e8"), BoardUtils.getCoordinateAtPosition("c8"));
-//        final MoveTransition t1 = board.currentPlayer()
-//                .makeMove(illegalCastleMove);
-//        assertFalse(t1.getMoveStatus().isDone());
-//    }
-
-
 }

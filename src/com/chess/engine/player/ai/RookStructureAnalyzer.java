@@ -1,4 +1,4 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ public final class RookStructureAnalyzer {
         return columns;
     }
 
-    public int rookStructureScore(final Board board,
-                                  final Player player) {
+    int rookStructureScore(final Board board,
+                           final Player player) {
         final List<Integer> rookLocations = calculateRookLocations(player);
         return calculateOpenFileRookBonus(board, rookLocations);
     }

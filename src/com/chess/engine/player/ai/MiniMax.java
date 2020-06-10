@@ -1,4 +1,4 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
@@ -13,7 +13,6 @@ public class MiniMax implements MoveStrategy {
     private final BoardEvaluator boardEvaluator;
     private final int searchDepth;
     private long boardsEvaluated;
-    private long executionTime;
     private FreqTableRow[] freqTable;
     private int freqTableIndex;
 
@@ -78,9 +77,9 @@ public class MiniMax implements MoveStrategy {
             moveCounter++;
         }
 
-        this.executionTime = System.currentTimeMillis() - startTime;
+        long executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s SELECTS %s [#boards = %d time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
-                bestMove, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)));
+                bestMove, this.boardsEvaluated, executionTime, (1000 * ((double)this.boardsEvaluated/ executionTime)));
         long total = 0;
         for (final FreqTableRow row : this.freqTable) {
             if(row != null) {
@@ -93,7 +92,7 @@ public class MiniMax implements MoveStrategy {
         return bestMove;
     }
 
-    public int min(Board board, final int depth) {
+    private int min(Board board, final int depth) {
         if (depth == 0) {
             this.boardsEvaluated++;
             this.freqTable[this.freqTableIndex].increment();
@@ -116,7 +115,7 @@ public class MiniMax implements MoveStrategy {
         return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate();
     }
 
-    public int max(Board board, final int depth) {
+    private int max(Board board, final int depth) {
         if (depth == 0 || isEndGameScenario(board)) {
             this.boardsEvaluated++;
             this.freqTable[this.freqTableIndex].increment();
@@ -145,11 +144,11 @@ public class MiniMax implements MoveStrategy {
             this.move = move;
         }
 
-        public long getCount() {
+        long getCount() {
             return this.count.get();
         }
 
-        public void increment() {
+        void increment() {
             this.count.incrementAndGet();
         }
 

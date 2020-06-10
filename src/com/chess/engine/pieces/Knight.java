@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.AttackMove;
-
 public class Knight extends Piece {
 
     private final static int[] POSSIBLE_OFFSETS = {-17, -15, -10, -6, 6, 10, 15, 17};
@@ -23,7 +21,7 @@ public class Knight extends Piece {
         super(Type.KNIGHT, piecePosition, pieceAlliance, true);
     }
 
-    public Knight(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+    Knight(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
         super(Type.KNIGHT, piecePosition, pieceAlliance, isFirstMove);
     }
 

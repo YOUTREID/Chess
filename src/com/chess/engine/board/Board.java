@@ -74,7 +74,7 @@ public class Board {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
     }
 
-    public Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
+    private Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
         final List<Move> legalMoves = new ArrayList<>();
         for (final Piece piece : pieces) {
             legalMoves.addAll(piece.calculateLegalMoves(this));
@@ -82,7 +82,7 @@ public class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    public Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+    private Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
         for (final Tile tile : gameBoard) {
             if (tile.occupied()) {
@@ -149,7 +149,7 @@ public class Board {
         return builder.build();
     }
 
-    public Collection<Move> getAllLegalMoves() {
+    Collection<Move> getAllLegalMoves() {
         Collection<Move> moves = ImmutableList.copyOf(Iterables.concat(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())),
                 calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance()))));
         moves = ImmutableList.copyOf(Iterables.concat(moves, this.currentPlayer.calculateKingCastles(getLegalMoves(), getOpponentMoves())));
@@ -178,7 +178,7 @@ public class Board {
 
     public static class Builder {
 
-        Map<Integer, Piece> boardConfig;
+        final Map<Integer, Piece> boardConfig;
         Alliance next;
         Pawn enPassantPawn;
 
@@ -186,21 +186,21 @@ public class Board {
             this.boardConfig = new HashMap<>();
         }
 
-        public Builder setPiece(final Piece piece) {
+        public void setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPiecePosition(), piece);
-            return this;
+            // return this;
         }
 
-        public Builder setMoveMaker(final Alliance next) {
+        public void setMoveMaker(final Alliance next) {
             this.next = next;
-            return this;
+            // return this;
         }
 
         public Board build() {
             return new Board(this);
         }
 
-        public void setEnPassantPawn(Pawn enPassantPawn) {
+        void setEnPassantPawn(Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
         }
     }

@@ -6,8 +6,6 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MajorAttackMove;
 import com.chess.engine.board.Move.MajorMove;
-import com.chess.engine.board.Tile;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,13 +20,13 @@ public class Rook extends Piece {
         super(Type.ROOK, piecePosition, pieceAlliance, true);
     }
 
-    public Rook(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+    Rook(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
         super(Type.ROOK, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
     public int locationBonus() {
-        return this.pieceAlliance.queenBonus(this.piecePosition);
+        return this.pieceAlliance.rookBonus(this.piecePosition);
     }
 
     @Override

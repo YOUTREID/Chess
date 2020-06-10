@@ -1,8 +1,7 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Observable;
 
 import com.chess.engine.Alliance;
@@ -21,7 +20,6 @@ public class AlphaBeta extends Observable implements MoveStrategy {
     private final MoveSorter moveSorter;
     private final int quiescenceFactor;
     private long boardsEvaluated;
-    private long executionTime;
     private int quiescenceCount;
     private int cutOffsProduced;
 
@@ -34,17 +32,12 @@ public class AlphaBeta extends Observable implements MoveStrategy {
             }
         };
 
-        public static Comparator<Move> SMART_SORT = new Comparator<Move>() {
-            @Override
-            public int compare(final Move move1, final Move move2) {
-                return ComparisonChain.start()
-                        .compareTrueFirst(BoardUtils.isThreatenedBoardImmediate(move1.getBoard()), BoardUtils.isThreatenedBoardImmediate(move2.getBoard()))
-                        .compareTrueFirst(move1.isAttack(), move2.isAttack())
-                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                        .compare(move2.getMovedPiece().getPieceValue(), move1.getMovedPiece().getPieceValue())
-                        .result();
-            }
-        };
+        public static final Comparator<Move> SMART_SORT = (move1, move2) -> ComparisonChain.start()
+                .compareTrueFirst(BoardUtils.isThreatenedBoardImmediate(move1.getBoard()), BoardUtils.isThreatenedBoardImmediate(move2.getBoard()))
+                .compareTrueFirst(move1.isAttack(), move2.isAttack())
+                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                .compare(move2.getMovedPiece().getPieceValue(), move1.getMovedPiece().getPieceValue())
+                .result();
 
         abstract Collection<Move> sort(Collection<Move> moves);
     }
@@ -114,16 +107,16 @@ public class AlphaBeta extends Observable implements MoveStrategy {
             notifyObservers(s);
             moveCounter++;
         }
-        this.executionTime = System.currentTimeMillis() - startTime;
+        long executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, eval rate = %.1f, cutoffCount = %d, prune percent = %.2f%%.\n", board.currentPlayer(),
-                bestMove, this.boardsEvaluated, this.executionTime, (1000 * (double)this.boardsEvaluated/this.executionTime), this.cutOffsProduced, 100 * ((double)this.cutOffsProduced/this.boardsEvaluated));
+                bestMove, this.boardsEvaluated, executionTime, (1000 * (double)this.boardsEvaluated/ executionTime), this.cutOffsProduced, 100 * ((double)this.cutOffsProduced/this.boardsEvaluated));
         return bestMove;
     }
 
-    public int max(final Board board,
-                   final int depth,
-                   final int highest,
-                   final int lowest) {
+    private int max(final Board board,
+                    final int depth,
+                    final int highest,
+                    final int lowest) {
         if (depth == 0 || BoardUtils.isEndGame(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board, depth);
@@ -133,7 +126,7 @@ public class AlphaBeta extends Observable implements MoveStrategy {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
+                        calculateQuiescenceDepth(board, depth), currentHighest, lowest));
                 if (lowest <= currentHighest) {
                     this.cutOffsProduced++;
                     break;
@@ -143,10 +136,10 @@ public class AlphaBeta extends Observable implements MoveStrategy {
         return currentHighest;
     }
 
-    public int min(final Board board,
-                   final int depth,
-                   final int highest,
-                   final int lowest) {
+    private int min(final Board board,
+                    final int depth,
+                    final int highest,
+                    final int lowest) {
         if (depth == 0 || BoardUtils.isEndGame(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board, depth);
@@ -156,7 +149,7 @@ public class AlphaBeta extends Observable implements MoveStrategy {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
+                        calculateQuiescenceDepth(board, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     this.cutOffsProduced++;
                     break;
@@ -167,7 +160,6 @@ public class AlphaBeta extends Observable implements MoveStrategy {
     }
 
     private int calculateQuiescenceDepth(final Board board,
-                                         final Move move,
                                          final int depth) {
         if((depth == 1 && (this.quiescenceCount < this.quiescenceFactor)) &&
                 BoardUtils.isThreatenedBoardImmediate(board)) {

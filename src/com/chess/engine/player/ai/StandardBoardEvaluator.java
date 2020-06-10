@@ -1,10 +1,9 @@
-package com.chess.engine.player.AI;
+package com.chess.engine.player.ai;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
-import com.chess.engine.player.AI.KingSafetyAnalyzer.KingDistance;
-import com.chess.engine.player.AI.BoardEvaluator;
+import com.chess.engine.player.ai.KingSafetyAnalyzer.KingDistance;
 import com.google.common.annotations.VisibleForTesting;
 
 public final class StandardBoardEvaluator

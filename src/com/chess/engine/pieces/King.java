@@ -5,16 +5,12 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static com.chess.engine.board.Move.*;
-import static com.chess.engine.board.Move.AttackMove;
-import static com.chess.engine.board.Move.MajorMove;
 
 public class King extends Piece {
 
@@ -23,12 +19,12 @@ public class King extends Piece {
     private final boolean kingSideCastleCapable;
     private final boolean queenSideCastleCapable;
 
-    public King(final Alliance alliance,
-                final int piecePosition,
-                final boolean isFirstMove,
-                final boolean isCastled,
-                final boolean kingSideCastleCapable,
-                final boolean queenSideCastleCapable) {
+    private King(final Alliance alliance,
+                 final int piecePosition,
+                 final boolean isFirstMove,
+                 final boolean isCastled,
+                 final boolean kingSideCastleCapable,
+                 final boolean queenSideCastleCapable) {
         super(Type.KING, piecePosition, alliance, isFirstMove);
         this.isCastled = isCastled;
         this.kingSideCastleCapable = kingSideCastleCapable;

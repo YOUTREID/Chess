@@ -12,21 +12,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class TakenPiecesPanel extends JPanel {
+class TakenPiecesPanel extends JPanel {
 
     private final JPanel northPanel;
     private final JPanel southPanel;
 
 
     private static final Color PANEL_COLOR = Color.decode("0xFDF5E6");
-    private static final Dimension TAKEN_PIECES_PANEL_DIMENSION = new Dimension(40, 80);
+    // private static final Dimension TAKEN_PIECES_PANEL_DIMENSION = new Dimension(40, 80);
     private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
 
-    public TakenPiecesPanel() {
+    TakenPiecesPanel() {
         super(new BorderLayout());
         setBackground(Color.decode("0xFDF5E6"));
         setBorder(PANEL_BORDER);
@@ -36,10 +34,10 @@ public class TakenPiecesPanel extends JPanel {
         this.southPanel.setBackground(PANEL_COLOR);
         add(this.northPanel, BorderLayout.NORTH);
         add(this.southPanel, BorderLayout.SOUTH);
-        setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
+        // setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
     }
 
-    public void redo(final Table.MoveLog moveLog) {
+    void redo(final Table.MoveLog moveLog) {
         southPanel.removeAll();
         northPanel.removeAll();
 
@@ -59,19 +57,9 @@ public class TakenPiecesPanel extends JPanel {
             }
         }
 
-        Collections.sort(whiteTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
-            }
-        });
+        whiteTakenPieces.sort((p1, p2) -> Ints.compare(p1.getPieceValue(), p2.getPieceValue()));
 
-        Collections.sort(blackTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
-            }
-        });
+        blackTakenPieces.sort((p1, p2) -> Ints.compare(p1.getPieceValue(), p2.getPieceValue()));
 
         for (final Piece takenPiece : whiteTakenPieces) {
             try {
