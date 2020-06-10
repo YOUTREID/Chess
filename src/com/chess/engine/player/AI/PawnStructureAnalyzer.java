@@ -17,8 +17,8 @@ public final class PawnStructureAnalyzer {
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
 
-    public static final int ISOLATED_PAWN_PENALTY = -10;
-    public static final int DOUBLED_PAWN_PENALTY = -10;
+    public static final int ISOLATED_PENALTY = -10;
+    public static final int DOUBLED_PENALTY = -10;
 
     private PawnStructureAnalyzer() {
     }
@@ -40,19 +40,10 @@ public final class PawnStructureAnalyzer {
         return columns;
     }
 
-    public int isolatedPawnPenalty(final Player player) {
-        return calculateIsolatedPawnPenalty(createPawnsOnColumnTable(calculatePlayerPawns(player)));
-    }
-
-    public int doubledPawnPenalty(final Player player) {
-        return calculateDoubledPawnPenalty(createPawnsOnColumnTable(calculatePlayerPawns(player)));
-    }
-
     public int pawnStructureScore(final Player player) {
         final Collection<Piece> playerPawns = calculatePlayerPawns(player);
         final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(playerPawns);
-        //final int overlyAdvanced = calculateOverlyAdvancedPawnsPenalty(playerPawns);
-        return /* calculateDoubledPawnPenalty(pawnsOnColumnTable) + */ calculateIsolatedPawnPenalty(pawnsOnColumnTable);
+        return calculateIsolatedPawnPenalty(pawnsOnColumnTable);
     }
 
     private static Collection<Piece> calculatePlayerPawns(final Player player) {
@@ -73,7 +64,7 @@ public final class PawnStructureAnalyzer {
                 numDoubledPawns += pawnsOnColumnTable.get(i).size();
             }
         }
-        return numDoubledPawns * DOUBLED_PAWN_PENALTY;
+        return numDoubledPawns * DOUBLED_PENALTY;
     }
 
     private static int calculateIsolatedPawnPenalty(final ListMultimap<Integer, Piece> pawnsOnColumnTable) {
@@ -92,7 +83,7 @@ public final class PawnStructureAnalyzer {
                 pawnsOnColumnTable.get(BOARD_COLUMNS.size() - 2).isEmpty()) {
             numIsolatedPawns += pawnsOnColumnTable.get(BOARD_COLUMNS.size() - 1).size();
         }
-        return numIsolatedPawns * ISOLATED_PAWN_PENALTY;
+        return numIsolatedPawns * ISOLATED_PENALTY;
     }
 
     private static ListMultimap<Integer, Piece> createPawnsOnColumnTable(final Collection<Piece> playerPawns) {
@@ -105,15 +96,6 @@ public final class PawnStructureAnalyzer {
             }
         }
         return table;
-    }
-
-    private static BitSet createPawnBitSet(final Collection<Piece> playerPawns) {
-        final BitSet result = new BitSet(64);
-        for(final Piece piece : playerPawns) {
-            result.set(piece.getPiecePosition());
-        }
-
-        return result;
     }
 
 }

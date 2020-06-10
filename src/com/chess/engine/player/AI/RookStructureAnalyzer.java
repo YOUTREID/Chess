@@ -13,7 +13,7 @@ public final class RookStructureAnalyzer {
 
     private static final RookStructureAnalyzer INSTANCE = new RookStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
-    private static final int OPEN_COLUMN_ROOK_BONUS = 25;
+    private static final int OPEN_COLUMN_BONUS = 25;
     private static final int NO_BONUS = 0;
 
     private RookStructureAnalyzer() {
@@ -60,7 +60,7 @@ public final class RookStructureAnalyzer {
             final int rookColumn = rookLocation/8;
             for(int i = 0; i < piecesOnColumn.length; i++) {
                 if(piecesOnColumn[i] == 1 && i == rookColumn){
-                    bonus += OPEN_COLUMN_ROOK_BONUS;
+                    bonus += OPEN_COLUMN_BONUS;
                 }
 
             }
@@ -79,6 +79,5 @@ public final class RookStructureAnalyzer {
         }
         return piecesOnColumnTable;
     }
-
 
 }
