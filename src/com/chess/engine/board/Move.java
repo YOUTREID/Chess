@@ -293,7 +293,7 @@ public abstract class Move {
         @Override
         public String toString() {
             return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()) + "-" +
-                    BoardUtils.getPositionAtCoordinate(this.destination) + "=" + Piece.Type.QUEEN;
+                    BoardUtils.getPositionAtCoordinate(this.destination) + "=" + Piece.PieceType.QUEEN;
         }
 
         @Override

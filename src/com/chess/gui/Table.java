@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.chess.engine.pieces.Piece.PieceType.KING;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
@@ -514,7 +515,7 @@ public class Table extends Observable {
 
         private Collection<Move> pieceLegalMoves(final Board board) {
             if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
-                if (humanMovedPiece.getPieceType().isKing()) {
+                if (humanMovedPiece.getPieceType() == KING) {
                     Collection<Move> pieceLegalMoves = humanMovedPiece.calculateLegalMoves(board);
                     pieceLegalMoves.addAll(board.currentPlayer().calculateKingCastles(board.getLegalMoves(), board.getOpponentMoves()));
                     return pieceLegalMoves;

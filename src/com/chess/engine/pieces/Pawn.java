@@ -17,11 +17,11 @@ public class Pawn extends Piece {
     private static final int[] POSSIBLE_OFFSET = {8, 16, 7, 9};
 
     public Pawn(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.PAWN, piecePosition, pieceAlliance, true);
+        super(PieceType.PAWN, piecePosition, pieceAlliance, true);
     }
 
     Pawn(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
-        super(Type.PAWN, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.PAWN, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return Type.PAWN.toString();
+        return PieceType.PAWN.toString();
     }
 
     public Piece getPromotionPiece() {

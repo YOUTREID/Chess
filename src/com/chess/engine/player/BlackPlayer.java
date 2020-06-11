@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.chess.engine.pieces.Piece.PieceType.ROOK;
+
 public class BlackPlayer extends Player {
     public BlackPlayer(final Board board, final Collection<Move> whiteLegalMoves, final Collection<Move> blackLegalMoves) {
         super(board, blackLegalMoves, whiteLegalMoves);
@@ -44,7 +46,7 @@ public class BlackPlayer extends Player {
                 if (rookTile.occupied() && rookTile.getPiece().isFirstMove()) {
                     if (Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
                             Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
-                            rookTile.getPiece().getPieceType().isRook()) {
+                            rookTile.getPiece().getPieceType() == ROOK) {
                         kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 6,
                                 (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 5));
                     }
@@ -57,7 +59,7 @@ public class BlackPlayer extends Player {
                 if (rookTile.occupied() && rookTile.getPiece().isFirstMove() &&
                         Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
                         Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
-                        rookTile.getPiece().getPieceType().isRook()) {
+                        rookTile.getPiece().getPieceType() == ROOK) {
                     kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 2,
                             (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 3));
                 }

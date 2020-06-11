@@ -18,11 +18,11 @@ public class Knight extends Piece {
     private final static int[] POSSIBLE_OFFSETS = {-17, -15, -10, -6, 6, 10, 15, 17};
 
     public Knight(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.KNIGHT, piecePosition, pieceAlliance, true);
+        super(PieceType.KNIGHT, piecePosition, pieceAlliance, true);
     }
 
     Knight(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
-        super(Type.KNIGHT, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.KNIGHT, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Knight extends Piece {
 
     @Override
     public String toString() {
-        return Type.KNIGHT.toString();
+        return PieceType.KNIGHT.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

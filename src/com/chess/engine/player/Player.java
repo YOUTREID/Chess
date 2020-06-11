@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.chess.engine.pieces.Piece.PieceType.KING;
+
 public abstract class Player {
 
     protected final Board board;
@@ -45,12 +47,10 @@ public abstract class Player {
     }
 
     private King establishKing() {
-        for (final Piece piece : getActivePieces()) {
-            if (piece.getPieceType().isKing()) {
-                return (King) piece;
-            }
-        }
-        throw new RuntimeException("Unreachable. Invalid board.");
+        return (King) getActivePieces().stream()
+                .filter(piece -> piece.getPieceType() == KING)
+                .findAny()
+                .orElseThrow(RuntimeException::new);
     }
 
     private boolean isMoveLegal(final Move move) {

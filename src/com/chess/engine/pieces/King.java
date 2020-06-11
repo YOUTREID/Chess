@@ -25,7 +25,7 @@ public class King extends Piece {
                  final boolean isCastled,
                  final boolean kingSideCastleCapable,
                  final boolean queenSideCastleCapable) {
-        super(Type.KING, piecePosition, alliance, isFirstMove);
+        super(PieceType.KING, piecePosition, alliance, isFirstMove);
         this.isCastled = isCastled;
         this.kingSideCastleCapable = kingSideCastleCapable;
         this.queenSideCastleCapable = queenSideCastleCapable;
@@ -35,7 +35,7 @@ public class King extends Piece {
                 final int piecePosition,
                 final boolean kingSideCastleCapable,
                 final boolean queenSideCastleCapable) {
-        super(Type.KING, piecePosition, alliance, true);
+        super(PieceType.KING, piecePosition, alliance, true);
         this.isCastled = false;
         this.kingSideCastleCapable = kingSideCastleCapable;
         this.queenSideCastleCapable = queenSideCastleCapable;
@@ -101,7 +101,7 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return Type.KING.toString();
+        return PieceType.KING.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

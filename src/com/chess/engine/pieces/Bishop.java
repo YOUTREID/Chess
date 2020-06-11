@@ -18,11 +18,11 @@ public class Bishop extends Piece {
     private final static int[] POSSIBLE_OFFSETS = {-9, -7, 7, 9};
 
     public Bishop(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.BISHOP, piecePosition, pieceAlliance, true);
+        super(PieceType.BISHOP, piecePosition, pieceAlliance, true);
     }
 
     public Bishop(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
-        super(Type.BISHOP, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.BISHOP, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return Type.BISHOP.toString();
+        return PieceType.BISHOP.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int current, final int candidateOffset) {

@@ -18,11 +18,11 @@ public class Queen extends Piece {
     private final static int[] POSSIBLE_OFFSETS = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     public Queen(final Alliance pieceAlliance, final int piecePosition) {
-        super(Type.QUEEN, piecePosition, pieceAlliance, true);
+        super(PieceType.QUEEN, piecePosition, pieceAlliance, true);
     }
 
     public Queen(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
-        super(Type.QUEEN, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.QUEEN, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return Type.QUEEN.toString();
+        return PieceType.QUEEN.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int current, final int candidateOffset) {
