@@ -87,14 +87,10 @@ public class AlphaBeta extends Observable implements MoveStrategy {
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
-                    //setChanged();
-                    //notifyObservers(bestMove);
                 }
                 else if (alliance.isBlack() && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
-                    //setChanged();
-                    //notifyObservers(bestMove);
                 }
                 final String quiescenceInfo = String.format(" [high: %d low: %d] quiescenceCount: %d", highestSeenValue, lowestSeenValue, this.quiescenceCount);
                 s = "\t" + toString() + "(" +depth+ "), move: (" +moveCounter+ "/" +numMoves+ ") " + move + ", best: " + bestMove
@@ -102,7 +98,6 @@ public class AlphaBeta extends Observable implements MoveStrategy {
             } else {
                 s = "\t" + toString() + ", m: (" +moveCounter+ "/" +numMoves+ ") " + move + " is illegal, best: " +bestMove;
             }
-            // System.out.println(s);
             setChanged();
             notifyObservers(s);
             moveCounter++;

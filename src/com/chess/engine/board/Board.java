@@ -150,18 +150,21 @@ public class Board {
     }
 
     Collection<Move> getAllLegalMoves() {
-        Collection<Move> moves = ImmutableList.copyOf(Iterables.concat(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())),
-                calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance()))));
-        moves = ImmutableList.copyOf(Iterables.concat(moves, this.currentPlayer.calculateKingCastles(getLegalMoves(), getOpponentMoves())));
+        Collection<Move> moves = new ArrayList<>(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())));
+        moves.addAll(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance())));
+        moves.addAll(this.currentPlayer.calculateKingCastles(getLegalMoves(), getOpponentMoves()));
+        moves.addAll(this.currentPlayer.getOpponent().calculateKingCastles(getLegalMoves(), getOpponentMoves()));
         return moves;
     }
 
     public Collection<Move> getLegalMoves() {
-        return ImmutableList.copyOf(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance())));
+        Collection<Move> moves =  new ArrayList<>(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getAlliance())));
+        moves.addAll(this.currentPlayer.calculateKingCastles(moves, getOpponentMoves()));
+        return moves;
     }
 
     public Collection<Move> getOpponentMoves() {
-        return ImmutableList.copyOf(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())));
+        return new ArrayList<>(calculateLegalMoves(this.calculateActivePieces(this.gameBoard, this.currentPlayer().getOpponent().getAlliance())));
     }
 
     public Player currentPlayer() {
@@ -170,10 +173,6 @@ public class Board {
 
     public boolean isAIShowingProcess() {
         return AIShowingThinking;
-    }
-
-    public void setAIShowingThinking(boolean AIShowingThinking) {
-        this.AIShowingThinking = AIShowingThinking;
     }
 
     public static class Builder {

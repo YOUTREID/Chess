@@ -92,6 +92,7 @@ public abstract class Player {
 
     public MoveTransition makeMove(final Move move) {
         if (!isMoveLegal(move)) {
+            // System.out.println("illegal move");
             return new MoveTransition(this.board, this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionBoard = move.execute();

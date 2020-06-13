@@ -36,8 +36,7 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    public Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
-                                                    final Collection<Move> opponentLegals) {
+    public Collection<Move> calculateKingCastles(final Collection<Move> playerLegals, Collection<Move> opponentLegals) {
         final List<Move> kingCastles = new ArrayList<>();
         if (this.playerKing.isFirstMove() && !this.isInCheck()) {
             //black's king side castle
@@ -65,6 +64,9 @@ public class BlackPlayer extends Player {
                 }
             }
         }
+//        if (kingCastles.size() > 0) {
+//            System.out.println("black " + kingCastles.get(0).getCurrent() + " to " + kingCastles.get(0).getDestination());
+//        }
         return kingCastles;
     }
 

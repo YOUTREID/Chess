@@ -64,6 +64,9 @@ public class WhitePlayer extends Player {
                 }
             }
         }
+//        if (kingCastles.size() > 0) {
+//            System.out.println("white " + kingCastles.get(0).getCurrent() + " to " + kingCastles.get(0).getDestination());
+//        }
         return kingCastles;
     }
 

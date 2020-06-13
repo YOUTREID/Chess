@@ -475,6 +475,8 @@ public abstract class Move {
         public static Move createMove(final Board board,
                                       final int current,
                                       final int destination) {
+            // System.out.println(board.getAllLegalMoves());
+            System.out.println("Should be: " + current + " to " + destination);
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getCurrent() == current &&
                         move.getDestination() == destination) {
