@@ -16,30 +16,35 @@ enum PieceUtils {
     private final Table<Alliance, Integer, Bishop> ALL_POSSIBLE_BISHOPS = PieceUtils.createAllPossibleMovedBishops();
     private final Table<Alliance, Integer, Pawn> ALL_POSSIBLE_PAWNS = PieceUtils.createAllPossibleMovedPawns();
 
-    Pawn getMovedPawn(final Move move) {
-        return ALL_POSSIBLE_PAWNS.get(move.getMovedPiece().getPieceAlliance(), move.getDestination());
+    Pawn getMovedPawn(final Alliance alliance,
+                      final int destinationCoordinate) {
+        return ALL_POSSIBLE_PAWNS.get(alliance, destinationCoordinate);
     }
 
-    Knight getMovedKnight(final Move move) {
-        return ALL_POSSIBLE_KNIGHTS.get(move.getMovedPiece().getPieceAlliance(), move.getDestination());
+    Knight getMovedKnight(final Alliance alliance,
+                          final int destinationCoordinate) {
+        return ALL_POSSIBLE_KNIGHTS.get(alliance, destinationCoordinate);
     }
 
-    Bishop getMovedBishop(final Move move) {
-        return ALL_POSSIBLE_BISHOPS.get(move.getMovedPiece().getPieceAlliance(), move.getDestination());
+    Bishop getMovedBishop(final Alliance alliance,
+                          final int destinationCoordinate) {
+        return ALL_POSSIBLE_BISHOPS.get(alliance, destinationCoordinate);
     }
 
-    Rook getMovedRook(final Move move) {
-        return ALL_POSSIBLE_ROOKS.get(move.getMovedPiece().getPieceAlliance(), move.getDestination());
+    Rook getMovedRook(final Alliance alliance,
+                      final int destinationCoordinate) {
+        return ALL_POSSIBLE_ROOKS.get(alliance, destinationCoordinate);
     }
 
-    Queen getMovedQueen(final Move move) {
-        return ALL_POSSIBLE_QUEENS.get(move.getMovedPiece().getPieceAlliance(), move.getDestination());
+    Queen getMovedQueen(final Alliance alliance,
+                        final int destinationCoordinate) {
+        return ALL_POSSIBLE_QUEENS.get(alliance, destinationCoordinate);
     }
 
     private static Table<Alliance, Integer, Pawn> createAllPossibleMovedPawns() {
         final ImmutableTable.Builder<Alliance, Integer, Pawn> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
+        for (final Alliance alliance : Alliance.values()) {
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
                 pieces.put(alliance, i, new Pawn(alliance, i, false));
             }
         }

@@ -32,7 +32,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table extends Observable {
-    private final static Dimension OUTER_DIMENSION = new Dimension(740, 710);
+    private final static Dimension OUTER_DIMENSION = new Dimension(760, 710);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
@@ -45,7 +45,6 @@ public class Table extends Observable {
     private final GameSetup gameSetup;
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
-    private final Color lastMovedTileColor = Color.decode("#c7c416");
 
     private Board chessBoard;
     private Tile sourceTile;
@@ -182,13 +181,6 @@ public class Table extends Observable {
         });
         optionsMenu.add(setupGameMenuItem);
 
-        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move");
-        undoMoveMenuItem.addActionListener(e -> {
-            if(Table.get().getMoveLog().size() > 0) {
-                undoLastMove();
-            }
-        });
-        optionsMenu.add(undoMoveMenuItem);
 
         final JMenuItem resetMenuItem = new JMenuItem("New Game");
         resetMenuItem.addActionListener(e -> undoAllMoves());
@@ -196,9 +188,13 @@ public class Table extends Observable {
 
         optionsMenu.addSeparator();
 
-        final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("AI optimization", true);
-        alphaBetaToggle.addActionListener(e -> alphaBetaOn = alphaBetaToggle.isSelected());
-        optionsMenu.add(alphaBetaToggle);
+        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move");
+        undoMoveMenuItem.addActionListener(e -> {
+            if (Table.get().getMoveLog().size() > 0) {
+                undoLastMove();
+            }
+        });
+        optionsMenu.add(undoMoveMenuItem);
 
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
         evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
@@ -212,6 +208,12 @@ public class Table extends Observable {
             System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
         });
         optionsMenu.add(legalMovesMenuItem);
+
+        optionsMenu.addSeparator();
+
+        final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("AI optimization", true);
+        alphaBetaToggle.addActionListener(e -> alphaBetaOn = alphaBetaToggle.isSelected());
+        optionsMenu.add(alphaBetaToggle);
 
         return optionsMenu;
     }
@@ -523,7 +525,9 @@ public class Table extends Observable {
         void drawTile(final Board board) {
             assignTileColor();
             assignTilePiece(board);
+            highlightTileBorder(board);
             highlightLegals(board);
+            highlightAIMove();
             validate();
             repaint();
         }
@@ -545,6 +549,16 @@ public class Table extends Observable {
             }
         }
 
+        private void highlightAIMove() {
+            if (computerMove != null) {
+                if (this.tileID == computerMove.getCurrent()) {
+                    setBackground(Color.pink);
+                } else if (this.tileID == computerMove.getDestination()) {
+                    setBackground(Color.magenta);
+                }
+            }
+        }
+
         private void highlightLegals(final Board board) {
             if (highlightLegalMoves) {
                 for (final Move move : pieceLegalMoves(board)) {
@@ -559,6 +573,15 @@ public class Table extends Observable {
             }
         }
 
+        private void highlightTileBorder(final Board board) {
+            if (humanMovedPiece != null &&
+                    humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance() &&
+                    humanMovedPiece.getPiecePosition() == this.tileID) {
+                setBorder(BorderFactory.createLineBorder(Color.cyan));
+            } else {
+                setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        }
 
         private Collection<Move> pieceLegalMoves(final Board board) {
             if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
@@ -585,13 +608,17 @@ public class Table extends Observable {
                 setBackground(this.tileID % 2 != 0 ? lightTileColor : darkTileColor);
             }
             if (this.tileID == lastToTile)
-                setBackground(lastMovedTileColor);
+                changeToTileColor();
             if (this.tileID == lastFromTile)
-                setBackground(lastMovedTileColor);
+                changeFromTileColor();
         }
 
-        private void changeColor() {
-            setBackground(lastMovedTileColor);
+        private void changeToTileColor() {
+            setBackground(Color.magenta);
+        }
+
+        private void changeFromTileColor() {
+            setBackground(Color.pink);
         }
 
     }
