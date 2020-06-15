@@ -470,13 +470,19 @@ public abstract class Move {
 
     public static class MoveFactory {
 
+        private static final Move NULL_MOVE = new NullMove();
+
         private MoveFactory(){}
+
+        public static Move getNullMove() {
+            return NULL_MOVE;
+        }
 
         public static Move createMove(final Board board,
                                       final int current,
                                       final int destination) {
             // System.out.println(board.getAllLegalMoves());
-            System.out.println("Should be: " + current + " to " + destination);
+            // System.out.println("Should be: " + current + " to " + destination);
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getCurrent() == current &&
                         move.getDestination() == destination) {

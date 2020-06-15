@@ -15,14 +15,37 @@ public final class StandardBoardEvaluator
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int ATTACK_MULTIPLIER = 1;
     private final static int TWO_BISHOPS_BONUS = 25;
+    private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
 
     public StandardBoardEvaluator() {
+    }
+
+    public static StandardBoardEvaluator get() {
+        return INSTANCE;
     }
 
     @Override
     public int evaluate(final Board board,
                         final int depth) {
         return score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
+    }
+
+    public String evaluationDetails(final Board board, final int depth) {
+        return
+                ("White Mobility : " + mobility(board.whitePlayer()) + "\n") +
+                        "White kingThreats : " + kingThreats(board.whitePlayer(), depth) + "\n" +
+                        "White attacks : " + attacks(board.whitePlayer()) + "\n" +
+                        "White castle : " + castle(board.whitePlayer()) + "\n" +
+                        "White pieceEval : " + pieceEvaluations(board.whitePlayer()) + "\n" +
+                        "White pawnStructure : " + pawnStructure(board.whitePlayer()) + "\n" +
+                        "---------------------\n" +
+                        "Black Mobility : " + mobility(board.blackPlayer()) + "\n" +
+                        "Black kingThreats : " + kingThreats(board.blackPlayer(), depth) + "\n" +
+                        "Black attacks : " + attacks(board.blackPlayer()) + "\n" +
+                        "Black castle : " + castle(board.blackPlayer()) + "\n" +
+                        "Black pieceEval : " + pieceEvaluations(board.blackPlayer()) + "\n" +
+                        "Black pawnStructure : " + pawnStructure(board.blackPlayer()) + "\n\n" +
+                        "Final Score = " + evaluate(board, depth);
     }
 
     private static int score(final Player player,

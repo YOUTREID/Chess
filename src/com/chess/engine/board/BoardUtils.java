@@ -1,5 +1,7 @@
 package com.chess.engine.board;
 
+import com.chess.engine.board.Move.MoveFactory;
+
 import java.util.*;
 
 public class BoardUtils {
@@ -83,6 +85,18 @@ public class BoardUtils {
 
     public static boolean isThreatenedBoardImmediate(final Board board) {
         return board.whitePlayer().isInCheck() || board.blackPlayer().isInCheck();
+    }
+
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while(currentMove != MoveFactory.getNullMove() && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return Collections.unmodifiableList(moveHistory);
     }
 
     public static boolean isEndGame(final Board board) {

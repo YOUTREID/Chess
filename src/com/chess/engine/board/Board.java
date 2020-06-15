@@ -1,6 +1,7 @@
 package com.chess.engine.board;
 
 import com.chess.engine.Alliance;
+import com.chess.engine.board.Move.MoveFactory;
 import com.chess.engine.pieces.*;
 import com.chess.engine.player.BlackPlayer;
 import com.chess.engine.player.Player;
@@ -19,9 +20,9 @@ public class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
-
     private final Pawn enPassantPawn;
     private boolean AIShowingThinking;
+    private final Move transitionMove;
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
@@ -35,6 +36,7 @@ public class Board {
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
         this.currentPlayer = builder.next.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
         this.enPassantPawn = builder.enPassantPawn;
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : MoveFactory.getNullMove();
     }
 
     @Override
@@ -60,6 +62,10 @@ public class Board {
 
     public Pawn getEnPassantPawn() {
         return enPassantPawn;
+    }
+
+    public Move getTransitionMove() {
+        return this.transitionMove;
     }
 
     public Collection<Piece> getBlackPieces() {
@@ -180,6 +186,7 @@ public class Board {
         final Map<Integer, Piece> boardConfig;
         Alliance next;
         Pawn enPassantPawn;
+        Move transitionMove;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -193,6 +200,11 @@ public class Board {
         public void setMoveMaker(final Alliance next) {
             this.next = next;
             // return this;
+        }
+
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
+            return this;
         }
 
         public Board build() {

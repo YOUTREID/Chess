@@ -8,11 +8,13 @@ import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.ai.AlphaBeta;
 import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.MoveTransition;
+import com.chess.engine.player.ai.StandardBoardEvaluator;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -168,14 +170,29 @@ public class Table extends Observable {
             Table.get().getGameSetup().promptUser();
             Table.get().setupUpdate(Table.get().getGameSetup());
         });
-
         optionsMenu.add(setupGameMenuItem);
 
+        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move");
+        undoMoveMenuItem.addActionListener(e -> {
+            if(Table.get().getMoveLog().size() > 0) {
+                undoLastMove();
+            }
+        });
+        optionsMenu.add(undoMoveMenuItem);
+
+        final JMenuItem resetMenuItem = new JMenuItem("New Game");
+        resetMenuItem.addActionListener(e -> undoAllMoves());
+        optionsMenu.add(resetMenuItem);
+
         optionsMenu.addSeparator();
+
         final JCheckBoxMenuItem alphaBetaToggle = new JCheckBoxMenuItem("AI optimization", true);
         alphaBetaToggle.addActionListener(e -> alphaBetaOn = alphaBetaToggle.isSelected());
-
         optionsMenu.add(alphaBetaToggle);
+
+        final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
+        evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
+        optionsMenu.add(evaluateBoardMenuItem);
 
         return optionsMenu;
     }
@@ -253,6 +270,8 @@ public class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
+        this.lastFromTile = -1;
+        this.lastToTile = -1;
     }
 
     private void undoLastMove() {
@@ -264,6 +283,8 @@ public class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
+        this.lastFromTile = -1;
+        this.lastToTile = -1;
     }
 
     private static class AIThinkTank extends SwingWorker<Move, String> {

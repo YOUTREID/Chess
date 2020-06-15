@@ -22,6 +22,7 @@ public class AlphaBeta extends Observable implements MoveStrategy {
     private long boardsEvaluated;
     private int quiescenceCount;
     private int cutOffsProduced;
+    private static final int MAX_QUIESCENCE = 25000;
 
     private enum MoveSorter {
 
@@ -87,10 +88,16 @@ public class AlphaBeta extends Observable implements MoveStrategy {
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
+                    if(moveTransition.getToBoard().blackPlayer().isInCheckMate()) {
+                        break;
+                    }
                 }
                 else if (alliance.isBlack() && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
+                    if(moveTransition.getToBoard().whitePlayer().isInCheckMate()) {
+                        break;
+                    }
                 }
                 final String quiescenceInfo = String.format(" [high: %d low: %d] quiescenceCount: %d", highestSeenValue, lowestSeenValue, this.quiescenceCount);
                 s = "\t" + toString() + "(" +depth+ "), move: (" +moveCounter+ "/" +numMoves+ ") " + move + ", best: " + bestMove
@@ -156,10 +163,20 @@ public class AlphaBeta extends Observable implements MoveStrategy {
 
     private int calculateQuiescenceDepth(final Board board,
                                          final int depth) {
-        if((depth == 1 && (this.quiescenceCount < this.quiescenceFactor)) &&
-                BoardUtils.isThreatenedBoardImmediate(board)) {
-            this.quiescenceCount++;
-            return 1;
+        if(depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+            int activityMeasure = 0;
+            if (board.currentPlayer().isInCheck()) {
+                activityMeasure += 1;
+            }
+            for(final Move move: BoardUtils.lastNMoves(board, 2)) {
+                if(move.isAttack()) {
+                    activityMeasure += 1;
+                }
+            }
+            if(activityMeasure >= 2) {
+                this.quiescenceCount++;
+                return 2;
+            }
         }
         return depth - 1;
     }
