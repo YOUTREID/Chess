@@ -5,10 +5,13 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.Player;
 import com.chess.engine.player.ai.AlphaBeta;
+import com.chess.engine.player.ai.AlphaBetaTuned;
 import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.ai.StandardBoardEvaluator;
+import com.chess.imports.FenUtilities;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -129,9 +132,16 @@ public class Table extends Observable {
 
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu("File");
-        final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(e -> System.out.println("Open PGN file"));
-        fileMenu.add(openPGN);
+        final JMenuItem openFEN = new JMenuItem("Load FEN File", KeyEvent.VK_F);
+        openFEN.addActionListener(e -> {
+            String fenString = JOptionPane.showInputDialog("Input FEN");
+            if (fenString != null) {
+                undoAllMoves();
+                chessBoard = FenUtilities.createGameFromFEN(fenString);
+                Table.get().getBoardPanel().drawBoard(chessBoard);
+            }
+        });
+        fileMenu.add(openFEN);
 
         final JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(e -> gameFrame.dispose());
@@ -194,6 +204,15 @@ public class Table extends Observable {
         evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
         optionsMenu.add(evaluateBoardMenuItem);
 
+        final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
+        legalMovesMenuItem.addActionListener(e -> {
+            System.out.println(chessBoard.getWhitePieces());
+            System.out.println(chessBoard.getBlackPieces());
+            System.out.println(playerInfo(chessBoard.currentPlayer()));
+            System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
+        });
+        optionsMenu.add(legalMovesMenuItem);
+
         return optionsMenu;
     }
 
@@ -232,6 +251,12 @@ public class Table extends Observable {
             }
 
         }
+    }
+
+    private static String playerInfo(final Player player) {
+        return ("Player: " + player.getAlliance() + "\nlegal moves (" + player.getLegalMoves().size() + ") = " + player.getLegalMoves() + "\ninCheck = " +
+                player.isInCheck() + "\nisInCheckMate = " + player.isInCheckMate() +
+                "\nisCastled = " + player.isCastled()) + "\n";
     }
 
     private void updateGameBoard(Board board) {
@@ -297,12 +322,13 @@ public class Table extends Observable {
             final int moveNumber = Table.get().getMoveLog().size();
             final int quiescenceFactor = 2000 + (100 * moveNumber);
             if (Table.get().isAlphaBetaOn()) {
-                final AlphaBeta strategy = new AlphaBeta(quiescenceFactor); //1500
+                // final AlphaBeta strategy = new AlphaBeta(Table.get().getGameSetup().getSearchDepth(), quiescenceFactor); //1500
+                final AlphaBetaTuned strategy = new AlphaBetaTuned(Table.get().getGameSetup().getSearchDepth());
                 strategy.addObserver(Table.get().getDebugPanel());
-                bestMove = strategy.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                bestMove = strategy.execute(Table.get().getGameBoard());
             } else {
                 final MiniMax miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
-                bestMove = miniMax.execute(Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                bestMove = miniMax.execute(Table.get().getGameBoard());
             }
             MusicPlayer.playMusic("art/sound/move.wav");
             return bestMove;

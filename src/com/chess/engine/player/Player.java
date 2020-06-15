@@ -43,7 +43,7 @@ public abstract class Player {
     }
 
     public Collection<Move> getLegalMoves() {
-        return board.getLegalMoves();
+        return legalMoves;
     }
 
     private King establishKing() {

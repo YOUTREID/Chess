@@ -32,7 +32,7 @@ public class MiniMax implements MoveStrategy {
     }
 
     @Override
-    public Move execute(Board board, int searchDepth) {
+    public Move execute(Board board) {
 
         final long startTime = System.currentTimeMillis();
 

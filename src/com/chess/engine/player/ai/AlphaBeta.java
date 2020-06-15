@@ -17,6 +17,7 @@ import com.google.common.collect.Ordering;
 public class AlphaBeta extends Observable implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
+    private final int depth;
     private final MoveSorter moveSorter;
     private final int quiescenceFactor;
     private long boardsEvaluated;
@@ -43,7 +44,8 @@ public class AlphaBeta extends Observable implements MoveStrategy {
         abstract Collection<Move> sort(Collection<Move> moves);
     }
 
-    public AlphaBeta(final int quiescenceFactor) {
+    public AlphaBeta(final int depth, final int quiescenceFactor) {
+        this.depth = depth;
         this.evaluator = new StandardBoardEvaluator();
         this.quiescenceFactor = quiescenceFactor;
         this.moveSorter = MoveSorter.SORT;
@@ -63,8 +65,7 @@ public class AlphaBeta extends Observable implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final Board board,
-                        final int depth) {
+    public Move execute(final Board board) {
         final long startTime = System.currentTimeMillis();
         final Player currentPlayer = board.currentPlayer();
         final Alliance alliance = currentPlayer.getAlliance();
