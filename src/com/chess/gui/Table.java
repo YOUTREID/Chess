@@ -57,7 +57,7 @@ public class Table extends Observable {
     private int lastFromTile = -1;
     private boolean highlightLegalMoves;
     private boolean alphaBetaOn = true;
-    private boolean useBook;
+    private String pieceImagePath = "art/simple/";
 
     private Table() {
         this.gameFrame = new JFrame("JChess");
@@ -101,14 +101,6 @@ public class Table extends Observable {
         return this.chessBoard;
     }
 
-    private boolean getUseBook() {
-        return this.useBook;
-    }
-
-    private boolean getHighlightLegalMoves() {
-        return this.highlightLegalMoves;
-    }
-
     private DebugPanel getDebugPanel() {
         return this.debugPanel;
     }
@@ -143,7 +135,10 @@ public class Table extends Observable {
         fileMenu.add(openFEN);
 
         final JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(e -> gameFrame.dispose());
+        exit.addActionListener(e -> {
+            Table.get().gameFrame.dispose();
+            System.exit(0);
+        });
         fileMenu.add(exit);
 
         return fileMenu;
@@ -158,23 +153,32 @@ public class Table extends Observable {
         });
         preferencesMenu.add(flipBoardMenuItem);
 
+        final JMenu chessChoiceSubMenu = new JMenu("Choose Chess Set");
+        final JMenuItem simpleChess = new JMenuItem("Standard");
+        chessChoiceSubMenu.add(simpleChess);
+        simpleChess.addActionListener(e -> {
+            pieceImagePath = "art/simple/";
+            Table.get().getBoardPanel().drawBoard(chessBoard);
+        });
+        final JMenuItem fancyChess = new JMenuItem("fancy");
+        chessChoiceSubMenu.add(fancyChess);
+        fancyChess.addActionListener(e -> {
+            pieceImagePath = "art/fancy/";
+            Table.get().getBoardPanel().drawBoard(chessBoard);
+        });
+        preferencesMenu.add(chessChoiceSubMenu);
+
         preferencesMenu.addSeparator();
         final JCheckBoxMenuItem legalMoveHighlight = new JCheckBoxMenuItem("Highlight Legal Moves", true);
         legalMoveHighlight.addActionListener(e -> highlightLegalMoves = legalMoveHighlight.isSelected());
-
         preferencesMenu.add(legalMoveHighlight);
-
-        final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem("Use Book Moves", true);
-        cbUseBookMoves.addActionListener(e -> useBook = cbUseBookMoves.isSelected());
-
-        preferencesMenu.add(cbUseBookMoves);
 
         return preferencesMenu;
     }
 
     private JMenu createOptionsMenu() {
         final JMenu optionsMenu = new JMenu("Options");
-        final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
+        final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game", KeyEvent.VK_S);
         setupGameMenuItem.addActionListener(e -> {
             Table.get().getGameSetup().promptUser();
             Table.get().setupUpdate(Table.get().getGameSetup());
@@ -182,13 +186,13 @@ public class Table extends Observable {
         optionsMenu.add(setupGameMenuItem);
 
 
-        final JMenuItem resetMenuItem = new JMenuItem("New Game");
+        final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_N);
         resetMenuItem.addActionListener(e -> undoAllMoves());
         optionsMenu.add(resetMenuItem);
 
         optionsMenu.addSeparator();
 
-        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move");
+        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move", KeyEvent.VK_U);
         undoMoveMenuItem.addActionListener(e -> {
             if (Table.get().getMoveLog().size() > 0) {
                 undoLastMove();
@@ -200,7 +204,7 @@ public class Table extends Observable {
         evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
         optionsMenu.add(evaluateBoardMenuItem);
 
-        final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
+        final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_C);
         legalMovesMenuItem.addActionListener(e -> {
             System.out.println(chessBoard.getWhitePieces());
             System.out.println(chessBoard.getBlackPieces());
@@ -251,7 +255,6 @@ public class Table extends Observable {
                         "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in stalemate!", "Game Over",
                         JOptionPane.INFORMATION_MESSAGE);
             }
-
         }
     }
 
@@ -297,8 +300,10 @@ public class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
-        Table.get().getBoardPanel().boardTiles.get(lastFromTile).resetColor();
-        Table.get().getBoardPanel().boardTiles.get(lastToTile).resetColor();
+        if (lastFromTile != -1 && lastToTile != -1) {
+            Table.get().getBoardPanel().boardTiles.get(lastFromTile).resetColor();
+            Table.get().getBoardPanel().boardTiles.get(lastToTile).resetColor();
+        }
         this.lastFromTile = -1;
         this.lastToTile = -1;
     }
@@ -312,6 +317,8 @@ public class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
+        Table.get().getBoardPanel().boardTiles.get(lastFromTile).resetColor();
+        Table.get().getBoardPanel().boardTiles.get(lastToTile).resetColor();
         this.lastFromTile = -1;
         this.lastToTile = -1;
     }
@@ -323,10 +330,8 @@ public class Table extends Observable {
         @Override
         protected Move doInBackground() {
             final Move bestMove;
-            final int moveNumber = Table.get().getMoveLog().size();
-            final int quiescenceFactor = 2000 + (100 * moveNumber);
             if (Table.get().isAlphaBetaOn()) {
-                // final AlphaBeta strategy = new AlphaBeta(Table.get().getGameSetup().getSearchDepth(), quiescenceFactor); //1500
+                // final AlphaBeta strategy = new AlphaBeta(Table.get().getGameSetup().getSearchDepth(), 2000 + (100 * Table.get().getMoveLog().size())); //1500
                 final AlphaBetaTuned strategy = new AlphaBetaTuned(Table.get().getGameSetup().getSearchDepth());
                 strategy.addObserver(Table.get().getDebugPanel());
                 bestMove = strategy.execute(Table.get().getGameBoard());
@@ -539,9 +544,8 @@ public class Table extends Observable {
             if (board.getTile(this.tileID).occupied()) {
                 try {
                     String imageFormat = ".png";
-                    String defaultPieceImagePath = "art/simple/";
                     final BufferedImage image =
-                            ImageIO.read(new File(defaultPieceImagePath +
+                            ImageIO.read(new File(pieceImagePath +
                                     board.getTile(this.tileID).getPiece().getPieceAlliance().toString().substring(0, 1) +
                                     board.getTile(this.tileID).getPiece().toString() + imageFormat));
                     add(new JLabel(new ImageIcon(image)));
@@ -615,7 +619,7 @@ public class Table extends Observable {
                 changeFromTileColor();
         }
 
-        public void resetColor() {
+        void resetColor() {
             if (BoardUtils.EIGHTH_RANK[this.tileID] ||
                 BoardUtils.SIXTH_RANK[this.tileID] ||
                 BoardUtils.FOURTH_RANK[this.tileID] ||

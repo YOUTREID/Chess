@@ -131,7 +131,7 @@ public class AlphaBetaTuned extends Observable implements MoveStrategy {
         } else if (currentPlayer.getAlliance().isBlack()) {
             return "[score: " + lowestSeenValue + "]";
         }
-        throw new RuntimeException("bad bad boy!");
+        throw new RuntimeException("no bueno");
     }
 
     private int max(final Board board,

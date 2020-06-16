@@ -14,7 +14,6 @@ class GameSetup extends JDialog {
     private PlayerType blackPlayerType;
     private final JSpinner searchDepthSpinner;
 
-    private static final int depth = 4;
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
@@ -45,7 +44,7 @@ class GameSetup extends JDialog {
         myPanel.add(blackComputerButton);
 
         myPanel.add(new JLabel("Search"));
-        this.searchDepthSpinner = addLabeledSpinner(myPanel, new SpinnerNumberModel(4, 0, 10, 1));
+        this.searchDepthSpinner = addLabeledSpinner(myPanel, new SpinnerNumberModel(4, 0, 8, 1));
 
         final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("OK");
