@@ -21,7 +21,6 @@ public class Board {
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
     private final Pawn enPassantPawn;
-    private boolean AIShowingThinking;
     private final Move transitionMove;
 
     public Board(final Builder builder) {
@@ -64,7 +63,7 @@ public class Board {
         return enPassantPawn;
     }
 
-    public Move getTransitionMove() {
+    Move getTransitionMove() {
         return this.transitionMove;
     }
 
@@ -76,7 +75,7 @@ public class Board {
         return this.whitePieces;
     }
 
-    public Iterable<Piece> getAllPieces() {
+    Iterable<Piece> getAllPieces() {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
     }
 
@@ -175,10 +174,6 @@ public class Board {
 
     public Player currentPlayer() {
         return this.currentPlayer;
-    }
-
-    public boolean isAIShowingProcess() {
-        return AIShowingThinking;
     }
 
     public static class Builder {

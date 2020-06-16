@@ -297,6 +297,8 @@ public class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
+        Table.get().getBoardPanel().boardTiles.get(lastFromTile).resetColor();
+        Table.get().getBoardPanel().boardTiles.get(lastToTile).resetColor();
         this.lastFromTile = -1;
         this.lastToTile = -1;
     }
@@ -613,6 +615,20 @@ public class Table extends Observable {
                 changeFromTileColor();
         }
 
+        public void resetColor() {
+            if (BoardUtils.EIGHTH_RANK[this.tileID] ||
+                BoardUtils.SIXTH_RANK[this.tileID] ||
+                BoardUtils.FOURTH_RANK[this.tileID] ||
+                BoardUtils.SECOND_RANK[this.tileID]) {
+            setBackground(this.tileID % 2 == 0 ? lightTileColor : darkTileColor);
+            } else if (BoardUtils.SEVENTH_RANK[this.tileID] ||
+                BoardUtils.FIFTH_RANK[this.tileID] ||
+                BoardUtils.THIRD_RANK[this.tileID] ||
+                BoardUtils.FIRST_RANK[this.tileID]) {
+            setBackground(this.tileID % 2 != 0 ? lightTileColor : darkTileColor);
+            }
+        }
+
         private void changeToTileColor() {
             setBackground(Color.magenta);
         }
@@ -620,7 +636,5 @@ public class Table extends Observable {
         private void changeFromTileColor() {
             setBackground(Color.pink);
         }
-
     }
-
 }

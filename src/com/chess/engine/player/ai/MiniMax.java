@@ -57,10 +57,6 @@ public class MiniMax implements MoveStrategy {
                 currentValue = board.currentPlayer().getAlliance().isWhite() ?
                         min(moveTransition.getToBoard(), searchDepth - 1) :
                         max(moveTransition.getToBoard(), searchDepth - 1);
-                if (board.isAIShowingProcess()) {
-                    System.out.println("\t" + toString() + " analyzing move (" +moveCounter + "/" +numMoves+ ") " + move +
-                            " scores " + currentValue + " " +this.freqTable[this.freqTableIndex]);
-                }
                 this.freqTableIndex++;
                 if (board.currentPlayer().getAlliance().isWhite() &&
                         currentValue >= highestSeenValue) {
