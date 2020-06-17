@@ -1,12 +1,8 @@
 package com.chess.gui;
 
-import com.chess.engine.board.Board;
-import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Tile;
+import com.chess.engine.board.*;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
-import com.chess.engine.player.ai.AlphaBeta;
 import com.chess.engine.player.ai.AlphaBetaTuned;
 import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.MoveTransition;
@@ -212,6 +208,16 @@ public class Table extends Observable {
             System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
         });
         optionsMenu.add(legalMovesMenuItem);
+
+        final JMenuItem escapeAnalysis = new JMenuItem("Escape Analysis Score", KeyEvent.VK_S);
+        escapeAnalysis.addActionListener(e -> {
+            final Move lastMove = moveLog.getMoves().get(moveLog.size() - 1);
+            if(lastMove != null) {
+                System.out.println(MoveUtils.exchangeScore(lastMove));
+            }
+
+        });
+        optionsMenu.add(escapeAnalysis);
 
         optionsMenu.addSeparator();
 

@@ -195,9 +195,8 @@ public class Board {
             this.next = next;
         }
 
-        public Builder setMoveTransition(final Move transitionMove) {
+        void setMoveTransition(final Move transitionMove) {
             this.transitionMove = transitionMove;
-            return this;
         }
 
         public Board build() {
