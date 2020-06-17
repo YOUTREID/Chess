@@ -189,12 +189,10 @@ public class Board {
 
         public void setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPiecePosition(), piece);
-            // return this;
         }
 
         public void setMoveMaker(final Alliance next) {
             this.next = next;
-            // return this;
         }
 
         public Builder setMoveTransition(final Move transitionMove) {

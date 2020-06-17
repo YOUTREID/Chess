@@ -17,14 +17,6 @@ public class FenUtilities {
         return parseFEN(fenString);
     }
 
-    public static String createFENFromGame(final Board board) {
-        return calculateBoardText(board) + " " +
-                calculateCurrentPlayerText(board) + " " +
-                calculateCastleText(board) + " " +
-                calculateEnPassantSquare(board) + " " +
-                "0 1";
-    }
-
     private static Board parseFEN(final String fenString) {
         final String[] fenPartitions = fenString.trim().split(" ");
         final Builder builder = new Builder();
