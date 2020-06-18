@@ -37,56 +37,59 @@ public class FenUtilities {
         int i = 0;
         while (i < boardTiles.length) {
             switch (boardTiles[i]) {
-                case 'r' -> {
+                case 'r':
                     builder.setPiece(new Rook(Alliance.BLACK, i));
                     i++;
-                }
-                case 'n' -> {
+                    break;
+                case 'n':
                     builder.setPiece(new Knight(Alliance.BLACK, i));
                     i++;
-                }
-                case 'b' -> {
+                    break;
+                case 'b':
                     builder.setPiece(new Bishop(Alliance.BLACK, i));
                     i++;
-                }
-                case 'q' -> {
+                    break;
+                case 'q':
                     builder.setPiece(new Queen(Alliance.BLACK, i));
                     i++;
-                }
-                case 'k' -> {
+                    break;
+                case 'k':
                     builder.setPiece(new King(Alliance.BLACK, i, blackKingSideCastle, blackQueenSideCastle));
                     i++;
-                }
-                case 'p' -> {
+                    break;
+                case 'p':
                     builder.setPiece(new Pawn(Alliance.BLACK, i));
                     i++;
-                }
-                case 'R' -> {
+                    break;
+                case 'R':
                     builder.setPiece(new Rook(Alliance.WHITE, i));
                     i++;
-                }
-                case 'N' -> {
+                    break;
+                case 'N':
                     builder.setPiece(new Knight(Alliance.WHITE, i));
                     i++;
-                }
-                case 'B' -> {
+                    break;
+                case 'B':
                     builder.setPiece(new Bishop(Alliance.WHITE, i));
                     i++;
-                }
-                case 'Q' -> {
+                    break;
+                case 'Q':
                     builder.setPiece(new Queen(Alliance.WHITE, i));
                     i++;
-                }
-                case 'K' -> {
+                    break;
+                case 'K':
                     builder.setPiece(new King(Alliance.WHITE, i, whiteKingSideCastle, whiteQueenSideCastle));
                     i++;
-                }
-                case 'P' -> {
+                    break;
+                case 'P':
                     builder.setPiece(new Pawn(Alliance.WHITE, i));
                     i++;
-                }
-                case '-' -> i++;
-                default -> throw new RuntimeException("Invalid FEN String " + gameConfiguration);
+                    break;
+                case '-':
+                    i++;
+                    break;
+                default:
+                    throw new RuntimeException("Invalid FEN String " + gameConfiguration);
             }
         }
         builder.setMoveMaker(moveMaker(fenPartitions[1]));

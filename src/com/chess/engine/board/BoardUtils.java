@@ -1,6 +1,7 @@
 package com.chess.engine.board;
 
 import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
 
@@ -93,6 +94,16 @@ public class BoardUtils {
         final Board board = move.getBoard();
         final MoveTransition transition = board.currentPlayer().makeMove(move);
         return transition.getToBoard().currentPlayer().isInCheck();
+    }
+
+
+    public static boolean isKingPawnTrap(final Board board,
+                                         final King king,
+                                         final int frontTile) {
+        final Piece piece = board.getTile(frontTile).getPiece();
+        return piece != null &&
+                piece.getPieceType() == Piece.PieceType.PAWN &&
+                piece.getPieceAlliance() != king.getPieceAlliance();
     }
 
     //(Most Valuable Victim - Least Valuable Aggressor)

@@ -104,6 +104,10 @@ public class Board {
         return gameBoard.get(coordinate);
     }
 
+    public Piece getTilePiece(final int coordinate) {
+        return gameBoard.get(coordinate).getPiece();
+    }
+
     private static List<Tile> createGameBoard(final Builder builder) {
         final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {

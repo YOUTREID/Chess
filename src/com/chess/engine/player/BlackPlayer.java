@@ -2,6 +2,7 @@ package com.chess.engine.player;
 
 import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.KingSideCastleMove;
 import com.chess.engine.board.Move.QueenSideCastleMove;
@@ -11,6 +12,7 @@ import com.chess.engine.pieces.Rook;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.chess.engine.pieces.Piece.PieceType.ROOK;
@@ -37,30 +39,37 @@ public class BlackPlayer extends Player {
 
     @Override
     public Collection<Move> calculateKingCastles(final Collection<Move> playerLegals, Collection<Move> opponentLegals) {
+        if (!hasCastleOpportunities()) {
+            return Collections.emptyList();
+        }
         final List<Move> kingCastles = new ArrayList<>();
-        if (this.playerKing.isFirstMove() && !this.isInCheck()) {
-            //black's king side castle
-            if (!this.board.getTile(5).occupied() && !this.board.getTile(6).occupied()) {
-                final Tile rookTile = this.board.getTile(7);
-                if (rookTile.occupied() && rookTile.getPiece().isFirstMove()) {
-                    if (Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
-                            Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
-                            rookTile.getPiece().getPieceType() == ROOK) {
-                        kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 6,
-                                (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 5));
+        if (this.playerKing.isFirstMove() && this.playerKing.getPiecePosition() == 4 && !this.isInCheck()) {
+            //blacks king side castle
+            if (this.board.getTilePiece(5) == null && this.board.getTilePiece(6) == null) {
+                final Piece kingSideRook = this.board.getTilePiece(7);
+                if (kingSideRook != null && kingSideRook.isFirstMove() &&
+                        Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
+                        Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
+                        kingSideRook.getPieceType() == ROOK) {
+                    if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
+                        kingCastles.add(
+                                new KingSideCastleMove(this.board, this.playerKing, 6, (Rook) kingSideRook, kingSideRook.getPiecePosition(), 5));
+
                     }
                 }
             }
-
-            if (!this.board.getTile(1).occupied() && !this.board.getTile(2).occupied() &&
-                    !this.board.getTile(3).occupied()) {
-                final Tile rookTile = this.board.getTile(0);
-                if (rookTile.occupied() && rookTile.getPiece().isFirstMove() &&
+            //blacks queen side castle
+            if (this.board.getTilePiece(1) == null && this.board.getTilePiece(2) == null &&
+                    this.board.getTilePiece(3) == null) {
+                final Piece queenSideRook = this.board.getTilePiece(0);
+                if (queenSideRook != null && queenSideRook.isFirstMove() &&
                         Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
                         Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
-                        rookTile.getPiece().getPieceType() == ROOK) {
-                    kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 2,
-                            (Rook) rookTile.getPiece(), rookTile.getTileCoordinates(), 3));
+                        queenSideRook.getPieceType() == ROOK) {
+                    if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
+                        kingCastles.add(
+                                new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook) queenSideRook, queenSideRook.getPiecePosition(), 3));
+                    }
                 }
             }
         }
